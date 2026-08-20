@@ -127,7 +127,7 @@
             <div class="kpi-card clickable-card flex flex-col items-center justify-center text-center bg-red-50/30" onclick="openModal()">
                 <div class="card-title w-full text-center flex items-center justify-center gap-1">
                     <i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
-                    <span class="text-brand-red">60일 이상 장기 미수잔액</span>
+                    <span class="text-brand-red">30일 이상 장기 미매출잔액</span>
                 </div>
                 <div class="text-2xl font-bold text-brand-red mt-2" id="valLongterm">0</div>
                 <span class="text-xs text-gray-500 mt-1">원 단위 (클릭하여 상세 보기)</span>
@@ -147,7 +147,7 @@
                                 <th class="text-right">출고처리</th>
                                 <th class="text-right">당월수금</th>
                                 <th class="text-right font-bold text-gray-700">현잔액</th>
-                                <th class="text-right text-brand-red">장기미수(60일)</th>
+                                <th class="text-right text-brand-red">장기 미매출(30일)</th>
                             </tr>
                         </thead>
                         <tbody id="deptTableBody"></tbody>
@@ -222,7 +222,7 @@
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
-                    60일 이상 장기 미수 거래처 명단 (원 단위)
+                    30일 이상 장기 미매출 거래처 명단 (원 단위)
                 </h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -237,7 +237,7 @@
                             <th class="p-2">거래처명</th>
                             <th class="p-2 text-right">전월미수</th>
                             <th class="p-2 text-right">현잔액</th>
-                            <th class="p-2 text-right font-bold text-brand-red">장기미수잔액(60일↑)</th>
+                            <th class="p-2 text-right font-bold text-brand-red">장기미매출(30일↑)</th>
                         </tr>
                     </thead>
                     <tbody id="longTermTableBody"></tbody>
@@ -524,7 +524,7 @@
                     { label: '출고 처리', data: chartData.shipped, backgroundColor: '#fcd34d', borderRadius: 4 },
                     { label: '당월 수금', data: chartData.collected, backgroundColor: '#4fd1c5', borderRadius: 4 },
                     { label: '현 잔액', data: chartData.current, backgroundColor: '#3b82f6', borderRadius: 4 },
-                    { label: '장기 미수(60일)', data: chartData.longterm, backgroundColor: '#ef4444', borderRadius: 4 }
+                    { label: '장기 미매출(30일)', data: chartData.longterm, backgroundColor: '#ef4444', borderRadius: 4 }
                 ];
                 chartInstance.update();
             }
@@ -569,7 +569,7 @@
                 `;
             });
             if(longTermClients.length === 0) {
-                 longTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">60일 이상 장기 미수 거래처가 없습니다.</td></tr>`;
+                 longTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">30일 이상 장기 미매출 처리 된 거래처가 없습니다.</td></tr>`;
             }
         }
 
