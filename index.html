@@ -73,7 +73,7 @@
 
     <div class="max-w-[1600px] mx-auto space-y-6">
         
-        <header class="flex justify-between items-end pb-2 border-b border-gray-200">
+        <header class="flex flex-col xl:flex-row justify-between items-end pb-2 border-b border-gray-200 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-700 tracking-wide">한국맥널티(주) 커피사업부 채권 관리 대시보드</h1>
                 <p class="text-sm text-gray-500 mt-1">
@@ -90,7 +90,7 @@
                     </button>
                 </div>
                 <!-- 엑셀 업로드 버튼 -->
-                <button onclick="document.getElementById('excelUpload').click()" class="bg-white border border-gray-300 text-gray-700 font-medium px-4 py-2 text-sm rounded-lg hover:bg-gray-50 transition flex items-center gap-2 shadow-sm">
+                <button onclick="document.getElementById('excelUpload').click()" class="bg-white border border-gray-300 text-gray-700 font-medium px-4 py-2 text-sm rounded-lg hover:bg-gray-50 transition flex items-center gap-2 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-file-excel text-green-600"></i>
                     <span>Data.xlsx 업로드</span>
                 </button>
@@ -175,11 +175,12 @@
                     <table class="data-list min-w-[600px]">
                         <thead class="sticky top-0 bg-white shadow-sm z-10">
                             <tr>
-                                <th>담당자(부서)</th>
-                                <th class="text-right">전월미수</th>
-                                <th class="text-right">출고처리</th>
-                                <th class="text-right">당월수금</th>
-                                <th class="text-right font-bold">현잔액</th>
+                                <!-- 담당자 테이블도 클릭 정렬이 가능하도록 변경 -->
+                                <th class="px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('manager')">담당자(부서) <i id="sortIconMgr_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('prev')">전월미수 <i id="sortIconMgr_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('shipped')">출고처리 <i id="sortIconMgr_shipped" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('collected')">당월수금 <i id="sortIconMgr_collected" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('current')">현잔액 <i id="sortIconMgr_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                             </tr>
                         </thead>
                         <tbody id="managerTableBody"></tbody>
@@ -268,6 +269,7 @@
         </div>
     </div>
 
+    <!-- JAVASCRIPT -->
     <script>
         const formatKRW = (num) => new Intl.NumberFormat('ko-KR').format(Math.round(num));
         const formatMil = (num) => new Intl.NumberFormat('ko-KR').format(Math.round(num / 1000000));
@@ -278,28 +280,39 @@
         let longTermClients = [];
         let chartInstance = null;
 
+        // 클라이언트(거래처) 정렬 상태
         let activeManagerName = null;
         let clientSortColumn = 'current';
         let clientSortAsc = false;
 
-        // 페이지 로드 시 차트 초기화 및 데모/서버 데이터 로드 시도
+        // 담당자 정렬 상태 추가
+        let managerSortColumn = 'manager'; 
+        let managerSortAsc = true;
+
+        // 로드 시 방어 로직 추가 (차트 초기화 오류 방지)
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
             loadServerData();
         });
 
         function initChart() {
-            const ctx = document.getElementById('deptBarChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
+            try {
+                const canvas = document.getElementById('deptBarChart');
+                if(!canvas) return;
+                const ctx = canvas.getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            } catch (e) {
+                console.warn("차트 초기화 중 오류가 발생했습니다. (일시적인 로딩 지연일 수 있습니다.)", e);
+            }
         }
 
         function loadServerData() {
@@ -321,8 +334,8 @@
                     processData(jsonRows);
                 })
                 .catch(err => {
-                    console.log("로컬 서버 파일 접근 불가 (기본 데모 데이터 로드)");
-                    loadMockData();
+                    console.log("로컬(내 컴퓨터) 환경이거나 파일을 찾을 수 없습니다. 데모 데이터를 로드합니다.", err);
+                    loadMockData(); // 로컬에서 열 때 하얀 빈 화면이 뜨지 않도록 즉시 데모 데이터 실행
                 });
         }
 
@@ -529,30 +542,8 @@
                 chartInstance.update();
             }
 
-            const mgrTbody = document.getElementById('managerTableBody');
-            mgrTbody.innerHTML = '';
-            
-            const managerEntries = Object.entries(managerData);
-            managerEntries.sort(([mgrA, dataA], [mgrB, dataB]) => dataA.dept.localeCompare(dataB.dept, 'ko') || mgrA.localeCompare(mgrB, 'ko'));
-
-            managerEntries.forEach(([manager, data]) => {
-                let statusColor = data.current > data.prev ? 'text-brand-red' : 'text-brand-blue';
-                const tr = document.createElement('tr');
-                tr.className = 'clickable-row border-b border-gray-100';
-                tr.onclick = () => renderClientDetails(manager, tr);
-                
-                tr.innerHTML = `
-                    <td class="py-2 pl-2">
-                        <div class="font-bold text-gray-800">${manager}</div>
-                        <div class="text-[10px] text-gray-400">${data.dept}</div>
-                    </td>
-                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.prev)}</td>
-                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.shipped)}</td>
-                    <td class="text-right text-brand-teal text-xs">${formatKRW(data.collected)}</td>
-                    <td class="text-right font-bold text-xs ${statusColor}">${formatKRW(data.current)}</td>
-                `;
-                mgrTbody.appendChild(tr);
-            });
+            // 담당자별 현황 테이블 렌더링 호출
+            renderManagerTable();
 
             const longTbody = document.getElementById('longTermTableBody');
             longTbody.innerHTML = '';
@@ -572,6 +563,79 @@
                  longTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">30일 이상 장기 미매출 처리 된 거래처가 없습니다.</td></tr>`;
             }
         }
+
+        // ================= 담당자 정렬 및 렌더링 함수 =================
+        function renderManagerTable() {
+            const mgrTbody = document.getElementById('managerTableBody');
+            mgrTbody.innerHTML = '';
+            
+            const managerEntries = Object.entries(managerData);
+            
+            managerEntries.sort(([mgrA, dataA], [mgrB, dataB]) => {
+                let valA, valB;
+                
+                // 이름 클릭 시에는 부서명+담당자명 조합으로 텍스트 정렬
+                if (managerSortColumn === 'manager') {
+                    valA = dataA.dept + mgrA;
+                    valB = dataB.dept + mgrB;
+                } else {
+                    valA = dataA[managerSortColumn];
+                    valB = dataB[managerSortColumn];
+                }
+
+                if (typeof valA === 'string') {
+                    return managerSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
+                } else {
+                    return managerSortAsc ? valA - valB : valB - valA;
+                }
+            });
+
+            managerEntries.forEach(([manager, data]) => {
+                let statusColor = data.current > data.prev ? 'text-brand-red' : 'text-brand-blue';
+                const tr = document.createElement('tr');
+                tr.className = 'clickable-row border-b border-gray-100';
+                if (manager === activeManagerName) tr.classList.add('active'); // 선택 유지
+
+                tr.onclick = () => renderClientDetails(manager, tr);
+                
+                tr.innerHTML = `
+                    <td class="py-2 pl-2">
+                        <div class="font-bold text-gray-800">${manager}</div>
+                        <div class="text-[10px] text-gray-400">${data.dept}</div>
+                    </td>
+                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.prev)}</td>
+                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.shipped)}</td>
+                    <td class="text-right text-brand-teal text-xs">${formatKRW(data.collected)}</td>
+                    <td class="text-right font-bold text-xs ${statusColor}">${formatKRW(data.current)}</td>
+                `;
+                mgrTbody.appendChild(tr);
+            });
+            updateMgrSortIcons();
+        }
+
+        function sortManagerTable(col) {
+            if (managerSortColumn === col) {
+                managerSortAsc = !managerSortAsc;
+            } else {
+                managerSortColumn = col;
+                // 담당자명은 기본 오름차순, 금액은 기본 내림차순(큰 금액 먼저) 설정
+                managerSortAsc = (col === 'manager'); 
+            }
+            renderManagerTable();
+        }
+
+        function updateMgrSortIcons() {
+            ['manager', 'prev', 'shipped', 'collected', 'current'].forEach(col => {
+                const icon = document.getElementById(`sortIconMgr_${col}`);
+                if (!icon) return;
+                if (managerSortColumn === col) {
+                    icon.className = managerSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
+                } else {
+                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
+                }
+            });
+        }
+        // ==========================================================
 
         function renderClientDetails(managerName, rowElement) {
             if (managerName) activeManagerName = managerName;
