@@ -80,6 +80,10 @@
                     영업일 PM 17:00 경 고정 업데이트 (서버 반영까지 5-10분 후 새로고침 필요. ※반영이 안될 시 쿠키를 지워주세요.)
                     <span id="updateTimeDisplay" class="text-brand-teal ml-2 font-semibold"></span>
                 </p>
+                <p id="dataBaseDateContainer" class="text-sm font-bold text-brand-blue mt-1.5 flex items-center gap-1.5 hidden">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span id="dataBaseDateDisplay"></span>
+                </p>
             </div>
             <div class="flex gap-3 items-center">
                 <!-- 검색창 -->
@@ -331,6 +335,14 @@
                     let sheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'data') || workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
                     
+                    const b3Cell = worksheet['B3'];
+                    if (b3Cell) {
+                        document.getElementById('dataBaseDateDisplay').innerText = (b3Cell.w || b3Cell.v);
+                        document.getElementById('dataBaseDateContainer').classList.remove('hidden');
+                    } else {
+                        document.getElementById('dataBaseDateContainer').classList.add('hidden');
+                    }
+
                     const b4Cell = worksheet['B4'];
                     if (b4Cell) {
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
@@ -397,6 +409,14 @@
                     let sheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'data') || workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
                     
+                    const b3Cell = worksheet['B3'];
+                    if (b3Cell) {
+                        document.getElementById('dataBaseDateDisplay').innerText = (b3Cell.w || b3Cell.v);
+                        document.getElementById('dataBaseDateContainer').classList.remove('hidden');
+                    } else {
+                        document.getElementById('dataBaseDateContainer').classList.add('hidden');
+                    }
+
                     const b4Cell = worksheet['B4'];
                     if (b4Cell) {
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
