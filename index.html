@@ -92,7 +92,7 @@
                 <!-- 엑셀 업로드 버튼 -->
                 <button onclick="document.getElementById('excelUpload').click()" class="bg-white border border-gray-300 text-gray-700 font-medium px-4 py-2 text-sm rounded-lg hover:bg-gray-50 transition flex items-center gap-2 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-file-excel text-green-600"></i>
-                    <span>Data_4.xlsx 업로드</span>
+                    <span>Data.xlsx 업로드</span>
                 </button>
                 <input type="file" id="excelUpload" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
             </div>
@@ -321,7 +321,7 @@
         }
 
         function loadServerData() {
-            fetch('Data_4.xlsx')
+            fetch('Data.xlsx')
                 .then(response => {
                     if (!response.ok) throw new Error("File not found");
                     return response.arrayBuffer();
