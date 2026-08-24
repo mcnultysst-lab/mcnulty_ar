@@ -104,40 +104,91 @@
 
         <!-- KPI Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">전월 마감 후 잔액</div>
+            <!-- 1. 전월 마감 후 잔액 -->
+            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
+                <!-- Tooltip -->
+                <div class="absolute z-50 w-[250px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
+                    전월 마감 후 ERP상 이월 잔액 입니다.<br>(ex. 데이터 기준일 8월 → 7월 말 매출/매입마감 후 최종 잔액)
+                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+                </div>
+
+                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
+                    전월 마감 후 잔액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valPrev">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
             
-            <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">8월 이전 매출 미처리 누적금액</div>
+            <!-- 2. 8월 이전 매출 미처리 누적금액 -->
+            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
+                <!-- Tooltip -->
+                <div class="absolute z-50 w-[270px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
+                    [+VAT] 전월 마감 후 ERP상 출고만 되고 매출로 넘기지 않은 금액 입니다.<br>(주요사유: 거래처 마감 기준에 따른 정산 이월, 클레임으로 인한 정산 이월)
+                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+                </div>
+
+                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
+                    8월 이전 매출 미처리 누적금액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedI">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
                 
                 <!-- 30일 이상 장기 미매출잔액 작게 표현 -->
-                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group" onclick="openModal()">
-                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover:text-brand-red transition">
+                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group/btn" onclick="openModal()">
+                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover/btn:text-brand-red transition">
                         <i class="fa-solid fa-triangle-exclamation text-brand-red"></i> 30일 이상 장기 미매출잔액
                     </div>
                     <div class="text-sm font-bold text-brand-red mt-1" id="valLongterm">0</div>
                 </div>
             </div>
 
-            <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">8월 당월 출고 매출금액</div>
+            <!-- 3. 8월 당월 출고 매출금액 -->
+            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
+                <!-- Tooltip -->
+                <div class="absolute z-50 w-[210px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
+                    [+VAT] 당월 출고 된 금액 입니다.
+                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+                </div>
+
+                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
+                    8월 당월 출고 매출금액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedJ">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
 
-            <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">당월 총 입금 (수금액)</div>
+            <!-- 4. 당월 총 입금 (수금액) -->
+            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
+                <!-- Tooltip -->
+                <div class="absolute z-50 w-[190px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
+                    당월 입금처리 된 금액 입니다.
+                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+                </div>
+
+                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
+                    당월 총 입금 (수금액) <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                </div>
                 <div class="text-2xl font-bold text-brand-teal mt-2" id="valCollected">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
 
-            <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">총 채권 잔액 (현 기준 잔액)</div>
+            <!-- 5. 총 채권 잔액 (현 기준 잔액) -->
+            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
+                <!-- Tooltip -->
+                <div class="absolute z-50 w-[290px] p-3 bottom-full right-[-10px] md:left-1/2 md:-translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
+                    [전월 마감 후 잔액] + [매출 미처리 누적금액] + [당월 출고 매출금액] - [당월 총 입금 (수금액)]
+                    <!-- 모바일에서는 우측, 태블릿 이상에서는 중앙 정렬되도록 화살표 꼬리 위치 조정 -->
+                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 right-6 md:right-auto md:left-1/2 md:-translate-x-1/2"></div>
+                </div>
+
+                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
+                    총 채권 잔액 (현 기준 잔액) <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valCurrent">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
