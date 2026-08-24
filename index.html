@@ -92,7 +92,7 @@
                 <!-- 엑셀 업로드 버튼 -->
                 <button onclick="document.getElementById('excelUpload').click()" class="bg-white border border-gray-300 text-gray-700 font-medium px-4 py-2 text-sm rounded-lg hover:bg-gray-50 transition flex items-center gap-2 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-file-excel text-green-600"></i>
-                    <span>Data.xlsx 업로드</span>
+                    <span>Data_4.xlsx 업로드</span>
                 </button>
                 <input type="file" id="excelUpload" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
             </div>
@@ -101,14 +101,28 @@
         <!-- KPI Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">총 이월 미수금 (전월 미수액)</div>
+                <div class="card-title w-full text-center">전월 마감 후 잔액</div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valPrev">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
             
             <div class="kpi-card flex flex-col items-center justify-center text-center">
-                <div class="card-title w-full text-center">출고 처리 금액 (당월+전월미처리)</div>
-                <div class="text-2xl font-bold text-gray-700 mt-2" id="valSales">0</div>
+                <div class="card-title w-full text-center">8월 이전 매출 미처리 누적금액</div>
+                <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedI">0</div>
+                <span class="text-xs text-gray-400 mt-1">백만원</span>
+                
+                <!-- 30일 이상 장기 미매출잔액 작게 표현 -->
+                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group" onclick="openModal()">
+                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover:text-brand-red transition">
+                        <i class="fa-solid fa-triangle-exclamation text-brand-red"></i> 30일 이상 장기 미매출잔액
+                    </div>
+                    <div class="text-sm font-bold text-brand-red mt-1" id="valLongterm">0</div>
+                </div>
+            </div>
+
+            <div class="kpi-card flex flex-col items-center justify-center text-center">
+                <div class="card-title w-full text-center">8월 당월 출고 매출금액</div>
+                <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedJ">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
             </div>
 
@@ -122,15 +136,6 @@
                 <div class="card-title w-full text-center">총 채권 잔액 (현 기준 잔액)</div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valCurrent">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
-            </div>
-            
-            <div class="kpi-card clickable-card flex flex-col items-center justify-center text-center bg-red-50/30" onclick="openModal()">
-                <div class="card-title w-full text-center flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
-                    <span class="text-brand-red">30일 이상 장기 미매출잔액</span>
-                </div>
-                <div class="text-2xl font-bold text-brand-red mt-2" id="valLongterm">0</div>
-                <span class="text-xs text-gray-500 mt-1">원 단위 (클릭하여 상세 보기)</span>
             </div>
         </div>
 
@@ -316,7 +321,7 @@
         }
 
         function loadServerData() {
-            fetch('Data.xlsx')
+            fetch('Data_4.xlsx')
                 .then(response => {
                     if (!response.ok) throw new Error("File not found");
                     return response.arrayBuffer();
@@ -446,7 +451,8 @@
                 }
 
                 const rowStr = Object.values(row).join('').replace(/\s+/g, '');
-                if (rowStr === '' || rowStr.includes('총합계') || rowStr.includes('합계') || rowStr.includes('총계') || rowStr.includes('소계')) {
+                // #미등록 데이터 필터링 추가
+                if (rowStr === '' || rowStr.includes('총합계') || rowStr.includes('합계') || rowStr.includes('총계') || rowStr.includes('소계') || rowStr.includes('#미등록')) {
                     continue;
                 }
 
@@ -464,21 +470,25 @@
 
                 if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0) continue;
 
-                const record = { dept: c, manager: d, client: b, prev, shipped, collected, current, longterm };
+                const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, longterm };
                 rawData.push(record);
 
                 if (longterm > 0) longTermClients.push(record);
 
-                if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, collected: 0, current: 0, longterm: 0 };
+                if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, longterm: 0 };
                 deptData[c].prev += prev;
                 deptData[c].shipped += shipped;
+                deptData[c].shipped_i += shipped_i;
+                deptData[c].shipped_j += shipped_j;
                 deptData[c].collected += collected;
                 deptData[c].current += current;
                 deptData[c].longterm += longterm;
 
-                if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, collected: 0, current: 0, longterm: 0, clients: [] };
+                if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, longterm: 0, clients: [] };
                 managerData[d].prev += prev;
                 managerData[d].shipped += shipped;
+                managerData[d].shipped_i += shipped_i;
+                managerData[d].shipped_j += shipped_j;
                 managerData[d].collected += collected;
                 managerData[d].current += current;
                 managerData[d].longterm += longterm;
@@ -494,13 +504,20 @@
         }
 
         function updateDashboardUI() {
-            let totalPrev = 0, totalShipped = 0, totalCollected = 0, totalCurrent = 0, totalLongTerm = 0;
+            let totalPrev = 0, totalShipped = 0, totalShippedI = 0, totalShippedJ = 0, totalCollected = 0, totalCurrent = 0, totalLongTerm = 0;
             Object.values(deptData).forEach(d => {
-                totalPrev += d.prev; totalShipped += d.shipped; totalCollected += d.collected; totalCurrent += d.current; totalLongTerm += d.longterm;
+                totalPrev += d.prev; 
+                totalShipped += d.shipped; 
+                totalShippedI += d.shipped_i; 
+                totalShippedJ += d.shipped_j; 
+                totalCollected += d.collected; 
+                totalCurrent += d.current; 
+                totalLongTerm += d.longterm;
             });
 
             document.getElementById('valPrev').innerText = formatMil(totalPrev);
-            document.getElementById('valSales').innerText = formatMil(totalShipped);
+            document.getElementById('valShippedI').innerText = formatMil(totalShippedI);
+            document.getElementById('valShippedJ').innerText = formatMil(totalShippedJ);
             document.getElementById('valCollected').innerText = formatMil(totalCollected);
             document.getElementById('valCurrent').innerText = formatMil(totalCurrent);
             document.getElementById('valLongterm').innerText = formatKRW(totalLongTerm);
