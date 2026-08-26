@@ -106,7 +106,6 @@
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <!-- 1. 전월 마감 후 잔액 -->
             <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <!-- Tooltip -->
                 <div class="absolute z-50 w-[250px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
                     전월 마감 후 ERP상 이월 잔액 입니다.<br>(ex. 데이터 기준일 8월 → 7월 말 매출/매입마감 후 최종 잔액)
@@ -122,7 +121,6 @@
             
             <!-- 2. 8월 이전 매출 미처리 누적금액 -->
             <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <!-- Tooltip -->
                 <div class="absolute z-50 w-[270px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
                     [+VAT] 전월 마감 후 ERP상 출고만 되고 매출로 넘기지 않은 금액 입니다.<br>(주요사유: 거래처 마감 기준에 따른 정산 이월, 클레임으로 인한 정산 이월)
@@ -134,19 +132,10 @@
                 </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedI">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
-                
-                <!-- 30일 이상 장기 미매출잔액 작게 표현 -->
-                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group/btn" onclick="openModal()">
-                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover/btn:text-brand-red transition">
-                        <i class="fa-solid fa-triangle-exclamation text-brand-red"></i> 30일 이상 장기 미매출잔액
-                    </div>
-                    <div class="text-sm font-bold text-brand-red mt-1" id="valLongterm">0</div>
-                </div>
             </div>
 
             <!-- 3. 8월 당월 출고 매출금액 -->
             <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <!-- Tooltip -->
                 <div class="absolute z-50 w-[210px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
                     [+VAT] 당월 출고 된 금액 입니다.
@@ -162,7 +151,6 @@
 
             <!-- 4. 당월 총 입금 (수금액) -->
             <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <!-- Tooltip -->
                 <div class="absolute z-50 w-[190px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
                     당월 입금처리 된 금액 입니다.
@@ -178,11 +166,9 @@
 
             <!-- 5. 총 채권 잔액 (현 기준 잔액) -->
             <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <!-- Tooltip -->
                 <div class="absolute z-50 w-[290px] p-3 bottom-full right-[-10px] md:left-1/2 md:-translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
                     [전월 마감 후 잔액] + [매출 미처리 누적금액] + [당월 출고 매출금액] - [당월 총 입금 (수금액)]
-                    <!-- 모바일에서는 우측, 태블릿 이상에서는 중앙 정렬되도록 화살표 꼬리 위치 조정 -->
                     <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 right-6 md:right-auto md:left-1/2 md:-translate-x-1/2"></div>
                 </div>
 
@@ -191,6 +177,19 @@
                 </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valCurrent">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
+                
+                <!-- 동적 장기미수 툴팁 및 버튼 -->
+                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group/btn relative" onclick="openModal()">
+                    <div class="absolute z-50 w-[max-content] px-3 py-2 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-center rounded-lg shadow-xl opacity-0 invisible group-hover/btn:opacity-100 group-hover/btn:visible transition-all duration-200 whitespace-nowrap">
+                        <span class="dyn-lt">장기미수</span>
+                        <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover/btn:text-brand-red transition">
+                        <i class="fa-solid fa-triangle-exclamation text-brand-red"></i> <span class="dyn-lt font-semibold">장기미수</span>
+                    </div>
+                    <div class="text-sm font-bold text-brand-red mt-1" id="valLongterm">0</div>
+                </div>
             </div>
         </div>
 
@@ -207,7 +206,7 @@
                                 <th class="text-right">출고처리</th>
                                 <th class="text-right">당월수금</th>
                                 <th class="text-right font-bold text-gray-700">현잔액</th>
-                                <th class="text-right text-brand-red">장기 미매출(30일)</th>
+                                <th class="text-right text-brand-red dyn-lt">장기미수</th>
                             </tr>
                         </thead>
                         <tbody id="deptTableBody"></tbody>
@@ -224,7 +223,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <!-- Manager Summary List -->
             <div class="kpi-card flex flex-col overflow-hidden">
                 <div class="card-title flex justify-between items-center">
@@ -235,12 +234,12 @@
                     <table class="data-list min-w-[600px]">
                         <thead class="sticky top-0 bg-white shadow-sm z-10">
                             <tr>
-                                <!-- 담당자 테이블도 클릭 정렬이 가능하도록 변경 -->
                                 <th class="px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('manager')">담당자(부서) <i id="sortIconMgr_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('prev')">전월미수 <i id="sortIconMgr_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('shipped')">출고처리 <i id="sortIconMgr_shipped" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('collected')">당월수금 <i id="sortIconMgr_collected" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('current')">현잔액 <i id="sortIconMgr_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIconMgr_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                             </tr>
                         </thead>
                         <tbody id="managerTableBody"></tbody>
@@ -248,12 +247,12 @@
                 </div>
             </div>
 
-            <!-- Client Details -->
+            <!-- Client Details (연령 분석) -->
             <div class="kpi-card flex flex-col overflow-hidden">
                 <div class="flex justify-between items-center mb-4">
                     <div class="card-title mb-0" id="clientDetailTitle">[거래처 상세 현황] 담당자를 선택하세요</div>
                     <div class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                        <span class="text-brand-red font-bold">Red</span>: 전월미수 대비 현잔액 증가
+                        <span class="text-brand-red font-bold">Red</span>: 장기미수 보유
                     </div>
                 </div>
                 
@@ -266,10 +265,14 @@
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('shipped')">출고처리 <i id="sortIcon_shipped" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('collected')">당월수금 <i id="sortIcon_collected" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                                 <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('current')">현잔액 <i id="sortIcon_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month0')"><span class="dyn-m0">당월발생분</span> <i id="sortIcon_month0" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month1')"><span class="dyn-m1">1개월전</span> <i id="sortIcon_month1" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month2')"><span class="dyn-m2">2개월전</span> <i id="sortIcon_month2" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
+                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIcon_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
                             </tr>
                         </thead>
                         <tbody id="clientTableBody">
-                            <tr><td colspan="5" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>
+                            <tr><td colspan="9" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -279,11 +282,11 @@
 
     <!-- Long-term Modal -->
     <div id="longTermModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
+        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
-                    30일 이상 장기 미매출 거래처 명단 (원 단위)
+                    <span class="dyn-lt">장기미수</span> 거래처 상세 명단 (원 단위)
                 </h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -293,12 +296,15 @@
                 <table class="data-list w-full">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
-                            <th class="p-2">부서</th>
-                            <th class="p-2">담당자</th>
-                            <th class="p-2">거래처명</th>
-                            <th class="p-2 text-right">전월미수</th>
-                            <th class="p-2 text-right">현잔액</th>
-                            <th class="p-2 text-right font-bold text-brand-red">장기미매출(30일↑)</th>
+                            <th class="p-2 whitespace-nowrap">부서</th>
+                            <th class="p-2 whitespace-nowrap">담당자</th>
+                            <th class="p-2 whitespace-nowrap">거래처명</th>
+                            <th class="p-2 text-right whitespace-nowrap">전월미수</th>
+                            <th class="p-2 text-right whitespace-nowrap">현잔액</th>
+                            <th class="p-2 text-right whitespace-nowrap dyn-m0">당월발생</th>
+                            <th class="p-2 text-right whitespace-nowrap dyn-m1">1개월전</th>
+                            <th class="p-2 text-right whitespace-nowrap dyn-m2">2개월전</th>
+                            <th class="p-2 text-right font-bold text-brand-red whitespace-nowrap dyn-lt">장기미수</th>
                         </tr>
                     </thead>
                     <tbody id="longTermTableBody"></tbody>
@@ -312,7 +318,7 @@
 
     <!-- Search Modal -->
     <div id="searchModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
+        <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
                     <i class="fa-solid fa-magnifying-glass text-brand-teal"></i>
@@ -345,15 +351,25 @@
         let clientSortColumn = 'current';
         let clientSortAsc = false;
 
-        // 담당자 정렬 상태 추가
+        // 담당자 정렬 상태
         let managerSortColumn = 'manager'; 
         let managerSortAsc = true;
 
-        // 로드 시 방어 로직 추가 (차트 초기화 오류 방지)
+        // 동적 헤더 타이틀 저장 (엑셀에서 불러옴)
+        let dynamicHeaders = { m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수' };
+
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
             loadServerData();
         });
+
+        // HTML 내의 모든 동적 텍스트 클래스를 업데이트
+        function updateDynamicHeaders() {
+            document.querySelectorAll('.dyn-m0').forEach(el => el.innerText = dynamicHeaders.m0);
+            document.querySelectorAll('.dyn-m1').forEach(el => el.innerText = dynamicHeaders.m1);
+            document.querySelectorAll('.dyn-m2').forEach(el => el.innerText = dynamicHeaders.m2);
+            document.querySelectorAll('.dyn-lt').forEach(el => el.innerText = dynamicHeaders.lt);
+        }
 
         function initChart() {
             try {
@@ -371,7 +387,7 @@
                     }
                 });
             } catch (e) {
-                console.warn("차트 초기화 중 오류가 발생했습니다. (일시적인 로딩 지연일 수 있습니다.)", e);
+                console.warn("차트 초기화 중 오류가 발생했습니다.", e);
             }
         }
 
@@ -402,8 +418,8 @@
                     processData(jsonRows);
                 })
                 .catch(err => {
-                    console.log("로컬(내 컴퓨터) 환경이거나 파일을 찾을 수 없습니다. 데모 데이터를 로드합니다.", err);
-                    loadMockData(); // 로컬에서 열 때 하얀 빈 화면이 뜨지 않도록 즉시 데모 데이터 실행
+                    console.log("로컬환경 또는 파일을 찾을 수 없어 데모 데이터를 로드합니다.", err);
+                    loadMockData(); 
                 });
         }
 
@@ -428,9 +444,11 @@
                     <th class="p-2">거래처명</th><th class="p-2">부서</th><th class="p-2">담당자</th>
                     <th class="p-2 text-right">전월미수</th><th class="p-2 text-right">출고처리</th>
                     <th class="p-2 text-right">당월수금</th><th class="p-2 text-right">현잔액</th>
+                    <th class="p-2 text-right dyn-lt">${dynamicHeaders.lt}</th>
                     </tr></thead><tbody>`;
                 results.forEach(r => {
                     let statusColor = r.current > r.prev ? 'text-brand-red' : 'text-brand-blue';
+                    let ltColor = r.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
                     html += `<tr class="border-b border-gray-100 hover:bg-gray-50">
                         <td class="p-2 font-bold">${r.client}</td>
                         <td class="p-2 text-xs text-gray-500">${r.dept}</td>
@@ -439,6 +457,7 @@
                         <td class="p-2 text-right text-xs text-gray-500">${formatKRW(r.shipped)}</td>
                         <td class="p-2 text-right text-xs text-brand-teal">${formatKRW(r.collected)}</td>
                         <td class="p-2 text-right text-xs font-bold ${statusColor}">${formatKRW(r.current)}</td>
+                        <td class="p-2 text-right text-xs ${ltColor}">${formatKRW(r.longterm)}</td>
                     </tr>`;
                 });
                 html += `</tbody></table>`;
@@ -456,7 +475,6 @@
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    
                     let sheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'data') || workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
                     
@@ -499,7 +517,11 @@
             longTermClients = [];
             activeManagerName = null;
             document.getElementById('clientDetailTitle').innerText = '[거래처 상세 현황] 담당자를 선택하세요';
-            document.getElementById('clientTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
+            document.getElementById('clientTableBody').innerHTML = '<tr><td colspan="6" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
+
+            // 기본값 셋팅
+            dynamicHeaders = { m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수' };
+            updateDynamicHeaders();
 
             let dataStarted = false;
             let lastDept = "미지정부서";
@@ -513,16 +535,22 @@
                 let c = String(row.C || '').trim();
                 let d = String(row.D || '').trim();
 
+                // 헤더 스캐닝 및 데이터 시작 분기
                 if (!dataStarted) {
-                    if (i >= 5 || b.includes('거래처') || c.includes('부서')) {
+                    if (b.includes('거래처') || b === '거래처명') {
+                        dynamicHeaders.m0 = String(row.N || '당월 발생분').trim();
+                        dynamicHeaders.m1 = String(row.O || '1개월전 발생분').trim();
+                        dynamicHeaders.m2 = String(row.P || '2개월전 발생분').trim();
+                        dynamicHeaders.lt = String(row.Q || '장기미수').trim();
+                        updateDynamicHeaders();
                         dataStarted = true;
                         continue;
                     }
+                    if (i > 7) dataStarted = true; // 강제 시작점 보장
                     continue;
                 }
 
                 const rowStr = Object.values(row).join('').replace(/\s+/g, '');
-                // #미등록 데이터 필터링 추가
                 if (rowStr === '' || rowStr.includes('총합계') || rowStr.includes('합계') || rowStr.includes('총계') || rowStr.includes('소계') || rowStr.includes('#미등록')) {
                     continue;
                 }
@@ -537,31 +565,42 @@
                 let shipped = shipped_i + shipped_j;
                 let collected = parseNum(row.K);
                 let current = parseNum(row.L);
-                let longterm = parseNum(row.M);
+                
+                // 연령별 채권 데이터 파싱
+                let month0 = parseNum(row.N);
+                let month1 = parseNum(row.O);
+                let month2 = parseNum(row.P);
+                let longterm = parseNum(row.Q);
 
                 if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0) continue;
 
-                const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, longterm };
+                const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm };
                 rawData.push(record);
 
                 if (longterm > 0) longTermClients.push(record);
 
-                if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, longterm: 0 };
+                if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0 };
                 deptData[c].prev += prev;
                 deptData[c].shipped += shipped;
                 deptData[c].shipped_i += shipped_i;
                 deptData[c].shipped_j += shipped_j;
                 deptData[c].collected += collected;
                 deptData[c].current += current;
+                deptData[c].month0 += month0;
+                deptData[c].month1 += month1;
+                deptData[c].month2 += month2;
                 deptData[c].longterm += longterm;
 
-                if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, longterm: 0, clients: [] };
+                if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, clients: [] };
                 managerData[d].prev += prev;
                 managerData[d].shipped += shipped;
                 managerData[d].shipped_i += shipped_i;
                 managerData[d].shipped_j += shipped_j;
                 managerData[d].collected += collected;
                 managerData[d].current += current;
+                managerData[d].month0 += month0;
+                managerData[d].month1 += month1;
+                managerData[d].month2 += month2;
                 managerData[d].longterm += longterm;
                 managerData[d].clients.push(record);
             }
@@ -583,7 +622,7 @@
                 totalShippedJ += d.shipped_j; 
                 totalCollected += d.collected; 
                 totalCurrent += d.current; 
-                totalLongTerm += d.longterm;
+                totalLongTerm += d.longterm; // 전체 장기미수 합계
             });
 
             document.getElementById('valPrev').innerText = formatMil(totalPrev);
@@ -625,34 +664,37 @@
                     { label: '출고 처리', data: chartData.shipped, backgroundColor: '#fcd34d', borderRadius: 4 },
                     { label: '당월 수금', data: chartData.collected, backgroundColor: '#4fd1c5', borderRadius: 4 },
                     { label: '현 잔액', data: chartData.current, backgroundColor: '#3b82f6', borderRadius: 4 },
-                    { label: '장기 미매출(30일)', data: chartData.longterm, backgroundColor: '#ef4444', borderRadius: 4 }
+                    { label: dynamicHeaders.lt, data: chartData.longterm, backgroundColor: '#ef4444', borderRadius: 4 }
                 ];
                 chartInstance.update();
             }
 
-            // 담당자별 현황 테이블 렌더링 호출
             renderManagerTable();
 
+            // LongTerm 모달 리스트 업데이트
             const longTbody = document.getElementById('longTermTableBody');
             longTbody.innerHTML = '';
             longTermClients.sort((a, b) => b.longterm - a.longterm).forEach(c => {
                 longTbody.innerHTML += `
                     <tr class="border-b border-gray-100 hover:bg-red-50/30 transition">
-                        <td class="p-2 text-xs text-gray-500">${c.dept}</td>
-                        <td class="p-2 text-xs font-bold">${c.manager}</td>
-                        <td class="p-2 text-sm font-bold text-gray-700">${c.client}</td>
-                        <td class="p-2 text-right text-xs text-gray-500">${formatKRW(c.prev)}</td>
-                        <td class="p-2 text-right text-xs text-gray-700">${formatKRW(c.current)}</td>
-                        <td class="p-2 text-right text-sm font-bold text-brand-red">${formatKRW(c.longterm)} 원</td>
+                        <td class="p-2 text-xs text-gray-500 whitespace-nowrap">${c.dept}</td>
+                        <td class="p-2 text-xs font-bold whitespace-nowrap">${c.manager}</td>
+                        <td class="p-2 text-sm font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
+                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
+                        <td class="p-2 text-right text-xs text-gray-700 font-bold whitespace-nowrap">${formatKRW(c.current)}</td>
+                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
+                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
+                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
+                        <td class="p-2 text-right text-sm font-bold text-brand-red whitespace-nowrap">${formatKRW(c.longterm)}</td>
                     </tr>
                 `;
             });
             if(longTermClients.length === 0) {
-                 longTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">30일 이상 장기 미매출 처리 된 거래처가 없습니다.</td></tr>`;
+                 longTbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500">장기 미매출 처리 된 거래처가 없습니다.</td></tr>`;
             }
         }
 
-        // ================= 담당자 정렬 및 렌더링 함수 =================
+        // ================= 담당자 정렬 및 렌더링 =================
         function renderManagerTable() {
             const mgrTbody = document.getElementById('managerTableBody');
             mgrTbody.innerHTML = '';
@@ -662,7 +704,6 @@
             managerEntries.sort(([mgrA, dataA], [mgrB, dataB]) => {
                 let valA, valB;
                 
-                // 이름 클릭 시에는 부서명+담당자명 조합으로 텍스트 정렬
                 if (managerSortColumn === 'manager') {
                     valA = dataA.dept + mgrA;
                     valB = dataB.dept + mgrB;
@@ -679,10 +720,10 @@
             });
 
             managerEntries.forEach(([manager, data]) => {
-                let statusColor = data.current > data.prev ? 'text-brand-red' : 'text-brand-blue';
+                let statusColor = data.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
                 const tr = document.createElement('tr');
                 tr.className = 'clickable-row border-b border-gray-100';
-                if (manager === activeManagerName) tr.classList.add('active'); // 선택 유지
+                if (manager === activeManagerName) tr.classList.add('active'); 
 
                 tr.onclick = () => renderClientDetails(manager, tr);
                 
@@ -694,7 +735,8 @@
                     <td class="text-right text-gray-500 text-xs">${formatKRW(data.prev)}</td>
                     <td class="text-right text-gray-500 text-xs">${formatKRW(data.shipped)}</td>
                     <td class="text-right text-brand-teal text-xs">${formatKRW(data.collected)}</td>
-                    <td class="text-right font-bold text-xs ${statusColor}">${formatKRW(data.current)}</td>
+                    <td class="text-right font-bold text-xs text-gray-600">${formatKRW(data.current)}</td>
+                    <td class="text-right text-xs ${statusColor}">${formatKRW(data.longterm)}</td>
                 `;
                 mgrTbody.appendChild(tr);
             });
@@ -706,14 +748,13 @@
                 managerSortAsc = !managerSortAsc;
             } else {
                 managerSortColumn = col;
-                // 담당자명은 기본 오름차순, 금액은 기본 내림차순(큰 금액 먼저) 설정
                 managerSortAsc = (col === 'manager'); 
             }
             renderManagerTable();
         }
 
         function updateMgrSortIcons() {
-            ['manager', 'prev', 'shipped', 'collected', 'current'].forEach(col => {
+            ['manager', 'prev', 'shipped', 'collected', 'current', 'longterm'].forEach(col => {
                 const icon = document.getElementById(`sortIconMgr_${col}`);
                 if (!icon) return;
                 if (managerSortColumn === col) {
@@ -723,8 +764,8 @@
                 }
             });
         }
-        // ==========================================================
 
+        // ================= 거래처 연령 상세 리스트 =================
         function renderClientDetails(managerName, rowElement) {
             if (managerName) activeManagerName = managerName;
             if (rowElement) {
@@ -751,14 +792,18 @@
             });
 
             sortedClients.forEach(c => {
-                let statusColor = c.current > c.prev ? 'text-brand-red' : 'text-brand-blue';
+                let ltColor = c.longterm > 0 ? 'text-brand-red' : 'text-gray-400';
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition-colors border-b border-gray-50">
-                        <td class="px-2 py-2 text-xs font-bold text-gray-700">${c.client}</td>
-                        <td class="text-right px-2 text-xs text-gray-400">${formatKRW(c.prev)}</td>
-                        <td class="text-right px-2 text-xs text-gray-400">${formatKRW(c.shipped)}</td>
-                        <td class="text-right px-2 text-xs text-brand-teal">${formatKRW(c.collected)}</td>
-                        <td class="text-right px-2 text-xs font-bold ${statusColor}">${formatKRW(c.current)}</td>
+                        <td class="px-2 py-2 text-xs font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
+                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
+                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.shipped)}</td>
+                        <td class="text-right px-2 text-xs text-brand-teal whitespace-nowrap">${formatKRW(c.collected)}</td>
+                        <td class="text-right px-2 text-xs font-bold text-gray-600 whitespace-nowrap">${formatKRW(c.current)}</td>
+                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
+                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
+                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
+                        <td class="text-right px-2 text-xs font-bold ${ltColor} whitespace-nowrap">${formatKRW(c.longterm)}</td>
                     </tr>
                 `;
             });
@@ -778,7 +823,7 @@
         }
 
         function updateSortIcons() {
-            ['client', 'prev', 'shipped', 'collected', 'current'].forEach(col => {
+            ['client', 'prev', 'shipped', 'collected', 'current', 'month0', 'month1', 'month2', 'longterm'].forEach(col => {
                 const icon = document.getElementById(`sortIcon_${col}`);
                 if (!icon) return;
                 if (clientSortColumn === col) {
@@ -791,8 +836,9 @@
 
         function loadMockData() {
             const mockJSON = [
-                { B: '샘플거래처A', C: '기업영업팀', D: '홍길동', H: 10000000, I: 5000000, J: 5000000, K: 4000000, L: 16000000, M: 500000 },
-                { B: '샘플거래처B', C: '온라인팀', D: '김철수', H: 20000000, I: 10000000, J: 5000000, K: 8000000, L: 27000000, M: 0 }
+                { B: '거래처명', N: '8월 발생분', O: '7월 발생분', P: '6월 발생분', Q: '5월 이전 장기미수' },
+                { B: '샘플거래처A', C: '기업영업팀', D: '홍길동', H: 10000000, I: 5000000, J: 5000000, K: 4000000, L: 16000000, N: 6000000, O: 5000000, P: 3000000, Q: 2000000 },
+                { B: '샘플거래처B', C: '온라인팀', D: '김철수', H: 20000000, I: 10000000, J: 5000000, K: 8000000, L: 27000000, N: 17000000, O: 10000000, P: 0, Q: 0 }
             ];
             processData(mockJSON);
         }
