@@ -399,7 +399,7 @@
         let deptSortColumn = 'current';
         let deptSortAsc = false;
 
-        // 동적 헤더 타이틀 저장 (엑셀에서 불러옴)
+        // 동적 헤더 타이틀 저장 (기본값)
         let dynamicHeaders = { m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수' };
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -458,6 +458,14 @@
                     if (b4Cell) {
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
                     }
+
+                    // 엑셀 N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
+                    if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
+                    if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
+                    if (worksheet['Q5']) dynamicHeaders.lt = String(worksheet['Q5'].w || worksheet['Q5'].v).trim();
+                    updateDynamicHeaders();
+
                     const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
                     processData(jsonRows);
                 })
@@ -538,6 +546,13 @@
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
                     }
 
+                    // 엑셀 N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
+                    if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
+                    if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
+                    if (worksheet['Q5']) dynamicHeaders.lt = String(worksheet['Q5'].w || worksheet['Q5'].v).trim();
+                    updateDynamicHeaders();
+
                     const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
                     processData(jsonRows);
                 } catch (error) {
@@ -566,10 +581,6 @@
             document.getElementById('clientDetailTitle').innerText = '[거래처 상세 현황] 담당자를 선택하세요';
             document.getElementById('clientTableBody').innerHTML = '<tr><td colspan="9" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
 
-            // 기본값 셋팅
-            dynamicHeaders = { m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수' };
-            updateDynamicHeaders();
-
             let dataStarted = false;
             let lastDept = "미지정부서";
             let lastManager = "미지정담당자";
@@ -585,11 +596,6 @@
                 // 헤더 스캐닝 및 데이터 시작 분기
                 if (!dataStarted) {
                     if (b.includes('거래처') || b === '거래처명') {
-                        dynamicHeaders.m0 = String(row.N || '당월 발생분').trim();
-                        dynamicHeaders.m1 = String(row.O || '1개월전 발생분').trim();
-                        dynamicHeaders.m2 = String(row.P || '2개월전 발생분').trim();
-                        dynamicHeaders.lt = String(row.Q || '장기미수').trim();
-                        updateDynamicHeaders();
                         dataStarted = true;
                         continue;
                     }
@@ -950,6 +956,8 @@
         }
 
         function loadMockData() {
+            dynamicHeaders = { m0: '8월 발생분', m1: '7월 발생분', m2: '6월 발생분', lt: '5월 이전 장기미수' };
+            updateDynamicHeaders();
             const mockJSON = [
                 { B: '거래처명', N: '8월 발생분', O: '7월 발생분', P: '6월 발생분', Q: '5월 이전 장기미수' },
                 { B: '샘플거래처A', C: '기업영업팀', D: '홍길동', H: 10000000, I: 5000000, J: 5000000, K: 4000000, L: 16000000, N: 6000000, O: 5000000, P: 3000000, Q: 2000000 },
