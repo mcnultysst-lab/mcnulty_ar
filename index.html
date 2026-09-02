@@ -128,7 +128,7 @@
                 </div>
 
                 <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    8월 이전 매출 미처리 누적금액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                    <span id="titleShippedI">8월 이전 매출 미처리 누적금액</span> <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
                 </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedI">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    8월 당월 출고 매출금액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
+                    <span id="titleShippedJ">8월 당월 출고 매출금액</span> <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
                 </div>
                 <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedJ">0</div>
                 <span class="text-xs text-gray-400 mt-1">백만원</span>
@@ -400,19 +400,33 @@
         let deptSortAsc = false;
 
         // 동적 헤더 타이틀 저장 (기본값)
-        let dynamicHeaders = { m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수' };
+        let dynamicHeaders = { 
+            m0: '당월 발생분', 
+            m1: '1개월전 발생분', 
+            m2: '2개월전 발생분', 
+            lt: '장기미수',
+            shippedI: '8월 이전 매출 미처리 누적금액',
+            shippedJ: '8월 당월 출고 매출금액'
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
             loadServerData();
         });
 
-        // HTML 내의 모든 동적 텍스트 클래스를 업데이트
+        // HTML 내의 모든 동적 텍스트 클래스 및 제목 업데이트
         function updateDynamicHeaders() {
             document.querySelectorAll('.dyn-m0').forEach(el => el.innerText = dynamicHeaders.m0);
             document.querySelectorAll('.dyn-m1').forEach(el => el.innerText = dynamicHeaders.m1);
             document.querySelectorAll('.dyn-m2').forEach(el => el.innerText = dynamicHeaders.m2);
             document.querySelectorAll('.dyn-lt').forEach(el => el.innerText = dynamicHeaders.lt);
+            
+            // KPI 카드 제목 동적 업데이트
+            const titleShippedI = document.getElementById('titleShippedI');
+            if(titleShippedI) titleShippedI.innerText = dynamicHeaders.shippedI;
+            
+            const titleShippedJ = document.getElementById('titleShippedJ');
+            if(titleShippedJ) titleShippedJ.innerText = dynamicHeaders.shippedJ;
         }
 
         function initChart() {
@@ -459,7 +473,9 @@
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
                     }
 
-                    // 엑셀 N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    // 엑셀 I5, J5, N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    if (worksheet['I5']) dynamicHeaders.shippedI = String(worksheet['I5'].w || worksheet['I5'].v).trim();
+                    if (worksheet['J5']) dynamicHeaders.shippedJ = String(worksheet['J5'].w || worksheet['J5'].v).trim();
                     if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
                     if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
                     if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
@@ -545,7 +561,9 @@
                         document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
                     }
 
-                    // 엑셀 N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    // 엑셀 I5, J5, N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
+                    if (worksheet['I5']) dynamicHeaders.shippedI = String(worksheet['I5'].w || worksheet['I5'].v).trim();
+                    if (worksheet['J5']) dynamicHeaders.shippedJ = String(worksheet['J5'].w || worksheet['J5'].v).trim();
                     if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
                     if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
                     if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
@@ -955,7 +973,14 @@
         }
 
         function loadMockData() {
-            dynamicHeaders = { m0: '8월 발생분', m1: '7월 발생분', m2: '6월 발생분', lt: '5월 이전 장기미수' };
+            dynamicHeaders = { 
+                m0: '8월 발생분', 
+                m1: '7월 발생분', 
+                m2: '6월 발생분', 
+                lt: '5월 이전 장기미수',
+                shippedI: '8월 이전 매출 미처리 누적금액',
+                shippedJ: '8월 당월 출고 매출금액'
+            };
             updateDynamicHeaders();
             const mockJSON = [
                 { B: '거래처명', N: '8월 발생분', O: '7월 발생분', P: '6월 발생분', Q: '5월 이전 장기미수' },
