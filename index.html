@@ -502,7 +502,6 @@
                     <th class="p-2 text-right dyn-lt">${dynamicHeaders.lt}</th>
                     </tr></thead><tbody>`;
                 results.forEach(r => {
-                    let statusColor = r.current > r.prev ? 'text-brand-red' : 'text-brand-blue';
                     let ltColor = r.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
                     html += `<tr class="border-b border-gray-100 hover:bg-gray-50">
                         <td class="p-2 font-bold">${r.client}</td>
@@ -511,7 +510,7 @@
                         <td class="p-2 text-right text-xs text-gray-500">${formatKRW(r.prev)}</td>
                         <td class="p-2 text-right text-xs text-gray-500">${formatKRW(r.shipped)}</td>
                         <td class="p-2 text-right text-xs text-brand-teal">${formatKRW(r.collected)}</td>
-                        <td class="p-2 text-right text-xs font-bold ${statusColor}">${formatKRW(r.current)}</td>
+                        <td class="p-2 text-right text-xs font-bold text-gray-700">${formatKRW(r.current)}</td>
                         <td class="p-2 text-right text-xs ${ltColor}">${formatKRW(r.longterm)}</td>
                     </tr>`;
                 });
