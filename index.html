@@ -1,1175 +1,1482 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한국맥널티(주) 커피사업부 채권 관리 대시보드</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>한국맥널티(주) 커피사업부 채권 관리 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+/* ============================================================
+   채권 관리 대시보드 · Monochrome + Red design system
+   ============================================================ */
+:root{
+  --ink:#0A0A0A;
+  --ink-2:#404040;
+  --ink-3:#737373;
+  --ink-4:#A3A3A3;
+  --line:#E8E8E8;
+  --line-2:#CFCFCF;
+  --bg:#F6F6F6;
+  --card:#FFFFFF;
+  --red:#D92D20;
+  --red-2:#B42318;
+  --red-soft:#FEF3F2;
+  --red-line:#F5B5AE;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-size:14px;
+  line-height:1.45;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+[hidden]{display:none !important}
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            bg: '#f0f2f5',
-                            card: '#ffffff',
-                            textMain: '#374151',
-                            textMuted: '#6b7280',
-                            border: '#e5e7eb',
-                            teal: '#4fd1c5',
-                            blue: '#3b82f6',
-                            red: '#ef4444',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans KR', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+/* ---------- layout ---------- */
+.wrap{max-width:1480px;margin:0 auto;padding:0 20px 64px}
+.sec{margin-top:22px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px}
+.sec-t{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.sec-t::before{content:"";width:10px;height:10px;background:var(--ink);display:block}
+.sec-sub{font-size:11.5px;color:var(--ink-4);letter-spacing:.02em}
+.card{background:var(--card);border:1px solid var(--line)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.card-t{font-size:12px;font-weight:700;color:var(--ink-2);letter-spacing:.03em}
+.hint{font-size:11px;color:var(--ink-4)}
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+/* ---------- login gate ---------- */
+.gate{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;z-index:200}
+.gate-box{width:100%;max-width:372px}
+.gate-mark{width:46px;height:46px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:26px}
+.gate-box h1{margin:0;font-size:21px;font-weight:900;letter-spacing:-.02em}
+.gate-sub{margin:6px 0 30px;font-size:12.5px;color:var(--ink-3);letter-spacing:.01em}
+.gate-lb{display:block;font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.08em;margin-bottom:8px}
+#pw{
+  width:100%;border:0;border-bottom:1.5px solid var(--line-2);background:transparent;
+  padding:10px 2px;font-size:16px;color:var(--ink);outline:none;font-family:inherit;letter-spacing:.08em;
+}
+#pw:focus{border-bottom-color:var(--ink)}
+#pw::placeholder{color:#C9C9C9;letter-spacing:0}
+.pw-wrap{position:relative}
+.pw-wrap #pw{padding-right:50px}
+.pw-eye{
+  position:absolute;right:0;bottom:9px;border:0;background:none;font-family:inherit;
+  font-size:11px;font-weight:700;color:var(--ink-4);cursor:pointer;padding:2px 0;letter-spacing:.02em;
+}
+.pw-eye:hover{color:var(--ink)}
+.gate-msg.warn{color:var(--ink);border-left:3px solid var(--red);background:#F5F5F5;padding:8px 11px;font-weight:600;font-size:12px;line-height:1.55}
+#gateBtn{
+  width:100%;margin-top:22px;padding:13px;background:var(--ink);color:#fff;border:0;
+  font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:.02em;
+}
+#gateBtn:hover{background:#000}
+#gateBtn:disabled{background:#C4C4C4;cursor:default}
+.gate-msg{min-height:18px;margin-top:10px;font-size:12.5px;color:var(--red);font-weight:600}
+.gate-msg.ok{color:var(--ink-3);font-weight:400}
+.gate-foot{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;padding:0;font-family:inherit;font-size:12px;color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.linkbtn:hover{color:var(--ink)}
 
-    <!-- Chart.js & SheetJS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1480px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-l{min-width:0;flex:1 1 320px}
+.top h1{margin:0;font-size:16px;font-weight:900;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:5px;font-size:11.5px;color:var(--ink-3)}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);padding:2px 8px;font-weight:700;color:var(--ink);font-size:11px}
+.badge-dot{width:6px;height:6px;background:var(--ink);border-radius:50%}
+.top-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.inp{
+  border:1px solid var(--line-2);background:#fff;padding:8px 11px;font-size:13px;font-family:inherit;
+  color:var(--ink);outline:none;width:190px;
+}
+.inp:focus{border-color:var(--ink)}
+.btn{
+  border:1px solid var(--ink);background:var(--ink);color:#fff;padding:8px 13px;font-size:12.5px;font-weight:700;
+  font-family:inherit;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover{background:#000}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line-2)}
+.btn.ghost:hover{border-color:var(--ink);background:#fff}
+.btn i{display:flex}
 
-    <style>
-        body { background-color: #f0f2f5; color: #374151; font-family: 'Noto Sans KR', sans-serif; }
-        .kpi-card { background: #ffffff; border: 1px solid #e5e7eb; padding: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-radius: 0.5rem; }
-        .card-title { font-size: 0.875rem; font-weight: 700; color: #6b7280; margin-bottom: 1rem; }
-        
-        .data-list { width: 100%; border-collapse: collapse; }
-        .data-list th { text-align: left; padding: 0.5rem; font-weight: 500; color: #9ca3af; border-bottom: 1px solid #f3f4f6; font-size: 0.75rem; white-space: nowrap; }
-        .data-list td { padding: 0.5rem; border-bottom: 1px solid #f3f4f6; font-size: 0.8rem; }
-        .data-list tr:last-child td { border-bottom: none; }
-        
-        .clickable-row { cursor: pointer; transition: background-color 0.2s; }
-        .clickable-row:hover { background-color: #f9fafb; }
-        .clickable-row.active { background-color: #eff6ff; border-left: 3px solid #3b82f6; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* 모달 활성화 CSS */
-        #longTermModal { display: none; }
-        #longTermModal.active { display: flex; }
-        #uncollectibleModal { display: none; }
-        #uncollectibleModal.active { display: flex; }
-        #searchModal { display: none; }
-        #searchModal.active { display: flex; }
-        #deptModal { display: none; }
-        #deptModal.active { display: flex; }
-    </style>
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:14px;margin-top:18px}
+.kpi-main{background:var(--ink);color:#fff;padding:26px 26px 22px;display:flex;flex-direction:column;justify-content:space-between;min-height:196px}
+.kpi-main .k-lb{font-size:12px;font-weight:600;color:#B5B5B5;letter-spacing:.05em}
+.kpi-main .k-v{font-size:clamp(38px,6.2vw,62px);font-weight:900;letter-spacing:-.035em;line-height:1;margin-top:12px}
+.kpi-main .k-u{font-size:13px;font-weight:600;color:#B5B5B5;margin-left:7px;letter-spacing:0}
+.kpi-main .k-foot{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);display:flex;gap:18px;flex-wrap:wrap;align-items:baseline}
+.kpi-main .k-foot .f{font-size:11.5px;color:#A8A8A8}
+.kpi-main .k-foot .f b{display:block;font-size:14px;color:#fff;font-weight:800;margin-top:3px}
+.risk-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
+.risk{background:#fff;border:1px solid var(--line);padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:border-color .15s,background .15s}
+.risk:hover{border-color:var(--red);background:var(--red-soft)}
+.risk.static{cursor:default}
+.risk.static:hover{border-color:var(--line);background:#fff}
+.risk-lb{font-size:11.5px;font-weight:700;color:var(--ink-3);display:flex;align-items:center;gap:7px;letter-spacing:.02em}
+.risk-v{font-size:clamp(22px,3vw,29px);font-weight:900;letter-spacing:-.025em;line-height:1.1;margin-top:8px}
+.risk-v .u{font-size:12px;font-weight:600;color:var(--ink-4);margin-left:5px;letter-spacing:0}
+.risk.red .risk-v{color:var(--red)}
+.risk.red .risk-lb{color:var(--red-2)}
+.risk-note{font-size:11px;color:var(--ink-4);margin-top:6px}
+.risk-go{font-size:11px;font-weight:700;color:var(--red);margin-top:6px}
+
+/* ---------- kpi strip ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:14px}
+.kpi{background:#fff;border:1px solid var(--line);padding:16px 18px;position:relative;min-height:112px;display:flex;flex-direction:column;justify-content:space-between}
+.kpi-lb{font-size:12px;font-weight:700;color:var(--ink-3);display:flex;align-items:flex-start;gap:6px;line-height:1.35}
+.kpi-v{font-size:clamp(22px,2.6vw,27px);font-weight:800;letter-spacing:-.02em;margin-top:10px}
+.kpi-v .u{font-size:11.5px;font-weight:600;color:var(--ink-4);margin-left:5px;letter-spacing:0}
+.kpi.pos .kpi-v{color:var(--ink)}
+.kpi.neg .kpi-v{color:var(--red)}
+.info{
+  flex:0 0 auto;width:15px;height:15px;border:1px solid var(--line-2);color:var(--ink-4);border-radius:50%;
+  font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  font-style:normal;line-height:1;margin-top:1px;user-select:none;
+}
+.info:hover{border-color:var(--ink);color:var(--ink)}
+.tip{
+  position:absolute;left:14px;right:14px;bottom:calc(100% - 6px);background:var(--ink);color:#E9E9E9;
+  font-size:11.5px;line-height:1.6;padding:11px 13px;z-index:30;display:none;box-shadow:0 8px 24px rgba(0,0,0,.22);
+  font-weight:400;
+}
+.tip.on{display:block}
+.tip b{color:#fff;display:block;margin-bottom:4px;font-size:11px;letter-spacing:.04em}
+.tip::after{content:"";position:absolute;left:22px;bottom:-6px;width:12px;height:12px;background:var(--ink);transform:rotate(45deg)}
+
+/* ---------- waterfall ---------- */
+.wf-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:22px 20px 0;min-width:460px}
+.wf-col{display:flex;flex-direction:column;min-width:0}
+.wf-track{position:relative;height:250px;border-bottom:1px solid var(--line-2)}
+.wf-bar{position:absolute;left:50%;transform:translateX(-50%);width:min(72%,58px);min-height:2px}
+.wf-bar.b-base{background:var(--ink)}
+.wf-bar.b-plus{background:#5A5A5A}
+.wf-bar.b-minus{background:repeating-linear-gradient(45deg,#D6D6D6 0 4px,#fff 4px 8px);border:1px solid var(--ink-4)}
+.wf-bar.b-total{background:var(--ink)}
+.wf-bar.b-total::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--red)}
+.wf-con{position:absolute;left:50%;width:calc(100% + 10px);height:1px;background:var(--line-2);border-top:1px dashed var(--line-2)}
+.wf-v{position:absolute;left:0;right:0;text-align:center;font-size:11.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}
+.wf-lb{padding:11px 2px 0;text-align:center;font-size:11.5px;font-weight:700;color:var(--ink-2);line-height:1.35}
+.wf-lb span{display:block;font-weight:500;color:var(--ink-4);font-size:10.5px}
+.wf-axis{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 20px 16px;font-size:11px;color:var(--ink-4);flex-wrap:wrap}
+.wf-axis b{color:var(--ink-3);font-weight:700}
+
+/* ---------- progress / dept ---------- */
+.prog-row{display:grid;grid-template-columns:132px minmax(0,1fr) 92px;gap:14px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+.prog-row:last-child{border-bottom:0}
+.prog-name{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog-track{height:9px;background:#EFEFEF;position:relative;overflow:hidden}
+.prog-fill{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.prog-fill.low{background:var(--red)}
+.prog-val{text-align:right;font-size:12.5px;font-weight:800;letter-spacing:-.01em}
+.prog-val span{display:block;font-size:10.5px;font-weight:500;color:var(--ink-4);letter-spacing:0}
+
+/* ---------- tables ---------- */
+.tw{overflow:auto;-webkit-overflow-scrolling:touch}
+.tw.scroll-y{max-height:440px}
+table.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:760px}
+table.tbl.wide{min-width:920px}
+table.tbl thead th{
+  position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid var(--ink);
+  padding:10px 12px;font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;
+  white-space:nowrap;text-align:left;user-select:none;
+}
+table.tbl thead th.s{cursor:pointer}
+table.tbl thead th.s:hover{color:var(--ink)}
+table.tbl thead th.r,table.tbl td.r{text-align:right}
+table.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink-2)}
+table.tbl td.b{font-weight:700;color:var(--ink)}
+table.tbl th:first-child,table.tbl td:first-child{position:sticky;left:0;background:#fff;z-index:2}
+table.tbl thead th:first-child{z-index:4;background:#fff}
+table.tbl tbody tr{transition:background .12s}
+table.tbl tbody tr.clickable{cursor:pointer}
+table.tbl tbody tr.clickable:hover td{background:#FAFAFA}
+table.tbl tbody tr.active td{background:#F2F2F2}
+table.tbl tbody tr.active td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+table.tbl tbody tr.total td{border-top:1.5px solid var(--ink);border-bottom:0;background:#fff;font-weight:800;color:var(--ink)}
+table.tbl tbody tr.total td:first-child{background:#fff}
+.red{color:var(--red) !important}
+.dim{color:var(--ink-4) !important}
+.muted{color:var(--ink-3) !important}
+.chip{display:inline-block;border:1px solid var(--line-2);padding:1px 6px;font-size:10.5px;font-weight:600;color:var(--ink-3)}
+.chip.red{border-color:var(--red-line);color:var(--red);background:var(--red-soft)}
+.sort-i{font-size:9px;color:#C4C4C4;margin-left:3px}
+.sort-i.on{color:var(--ink)}
+.legend{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--ink-3);flex-wrap:wrap}
+.legend i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal-box{background:#fff;width:100%;max-width:1180px;max-height:86vh;display:flex;flex-direction:column;border:1px solid var(--ink)}
+.modal-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fff}
+.modal-h h3{margin:0;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.modal-h h3::before{content:"";width:9px;height:9px;background:var(--ink);display:block;flex:0 0 auto}
+.modal-h.danger h3::before{background:var(--red)}
+.x{border:0;background:none;font-size:20px;line-height:1;color:var(--ink-3);cursor:pointer;padding:2px 4px;font-family:inherit}
+.x:hover{color:var(--ink)}
+.modal-b{padding:0 0 4px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1}
+.modal-b .pad{padding:14px 18px}
+.modal-f{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.searchbox{border:1px solid var(--line);background:#FAFAFA;padding:14px 16px;margin:14px 18px}
+
+/* ---------- empty / loading ---------- */
+.empty{padding:34px 18px;text-align:center;color:var(--ink-4);font-size:13px}
+.spin{width:15px;height:15px;border:2px solid var(--line-2);border-top-color:var(--ink);border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;font-size:13px;font-weight:600;z-index:300;display:none;max-width:90vw;text-align:center}
+#toast.on{display:block}
+
+/* ---------- menu ---------- */
+.menu{position:relative}
+.menu-list{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--ink);min-width:250px;z-index:80;display:none;box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.menu-list.on{display:block}
+.menu-list button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:11px 14px;font-family:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--line);line-height:1.4}
+.menu-list button:last-child{border-bottom:0}
+.menu-list button:hover{background:#F6F6F6}
+.menu-list button small{display:block;color:var(--ink-4);font-size:10.5px;margin-top:2px}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .risk-stack{grid-template-rows:none;grid-template-columns:1fr 1fr}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  body{font-size:13.5px}
+  .wrap{padding:0 13px 52px}
+  .top-in{padding:11px 13px;gap:10px}
+  .top h1{font-size:14.5px;white-space:normal}
+  .top-l{flex:1 1 100%}
+  .top-r{width:100%}
+  .top-r .inp{flex:1 1 150px;width:auto;min-width:0}
+  .kpi-main{padding:20px 18px 18px;min-height:auto}
+  .kpi-main .k-v{font-size:clamp(32px,10vw,44px)}
+  .kpi{padding:13px 14px;min-height:98px}
+  .kpi-v{font-size:21px}
+  .risk-stack{grid-template-columns:1fr}
+  .wf{padding:18px 10px 0;min-width:338px;gap:5px}
+  .wf-track{height:200px}
+  .wf-lb{font-size:10px;letter-spacing:-.01em}
+  .wf-v{font-size:10.5px}
+  .prog-row{grid-template-columns:96px minmax(0,1fr) 78px;gap:9px;padding:10px 13px}
+  .prog-name{font-size:11.5px}
+  .modal{padding:0}
+  .modal-box{max-width:100%;max-height:100dvh;height:100dvh;border:0}
+  .modal-b .pad{padding:12px 13px}
+  .searchbox{margin:12px 13px}
+  .sec{margin-top:17px}
+  .tip{bottom:auto;top:calc(100% - 4px)}
+  .tip::after{bottom:auto;top:-6px;left:22px}
+}
+@media print{
+  .top-r,.menu,.info,.modal,.gate{display:none !important}
+  body{background:#fff}
+  .tw{overflow:visible;max-height:none}
+  .card,.kpi,.kpi-main{break-inside:avoid}
+}
+</style>
 </head>
-<body class="min-h-screen p-4 md:p-6">
+<body>
 
-    <div class="max-w-[1600px] mx-auto space-y-6">
-        
-        <header class="flex flex-col xl:flex-row justify-between items-end pb-2 border-b border-gray-200 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-700 tracking-wide">한국맥널티(주) 커피사업부 채권 관리 대시보드</h1>
-                <p class="text-sm text-gray-500 mt-1">
-                    영업일 PM 17:00 경 고정 업데이트 (서버 반영까지 5-10분 후 새로고침 필요. ※반영이 안될 시 쿠키를 지워주세요.)
-                    <span id="updateTimeDisplay" class="text-brand-teal ml-2 font-semibold"></span>
-                </p>
-                <p id="dataBaseDateContainer" class="text-sm font-bold text-brand-blue mt-1.5 flex items-center gap-1.5 hidden">
-                    <i class="fa-regular fa-calendar-check"></i>
-                    <span id="dataBaseDateDisplay"></span>
-                </p>
-            </div>
-            <div class="flex gap-3 items-center">
-                <!-- 검색창 -->
-                <div class="relative">
-                    <input type="text" id="clientSearchInput" placeholder="거래처명 검색..." onkeypress="handleSearch(event)" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-teal w-48 md:w-64">
-                    <button onclick="searchClient()" class="absolute right-2 top-1.5 text-gray-400 hover:text-brand-teal p-1">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
-                <!-- 엑셀 업로드 버튼 -->
-                <button onclick="document.getElementById('excelUpload').click()" class="bg-white border border-gray-300 text-gray-700 font-medium px-4 py-2 text-sm rounded-lg hover:bg-gray-50 transition flex items-center gap-2 shadow-sm whitespace-nowrap">
-                    <i class="fa-solid fa-file-excel text-green-600"></i>
-                    <span>Data.xlsx 업로드</span>
-                </button>
-                <input type="file" id="excelUpload" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
-            </div>
-        </header>
-
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <!-- 1. 전월 마감 후 잔액 -->
-            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <div class="absolute z-50 w-[250px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
-                    전월 마감 후 ERP상 이월 잔액 입니다.<br>(ex. 데이터 기준일 8월 → 7월 말 매출/매입마감 후 최종 잔액)
-                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                </div>
-
-                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    전월 마감 후 잔액 <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
-                </div>
-                <div class="text-2xl font-bold text-gray-700 mt-2" id="valPrev">0</div>
-                <span class="text-xs text-gray-400 mt-1">백만원</span>
-            </div>
-            
-            <!-- 2. 8월 이전 매출 미처리 누적금액 -->
-            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <div class="absolute z-50 w-[270px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
-                    [+VAT] 전월 마감 후 ERP상 출고만 되고 매출로 넘기지 않은 금액 입니다.<br>(주요사유: 거래처 마감 기준에 따른 정산 이월, 클레임으로 인한 정산 이월)
-                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                </div>
-
-                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    <span id="titleShippedI">8월 이전 매출 미처리 누적금액</span> <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
-                </div>
-                <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedI">0</div>
-                <span class="text-xs text-gray-400 mt-1">백만원</span>
-            </div>
-
-            <!-- 3. 8월 당월 출고 매출금액 -->
-            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <div class="absolute z-50 w-[210px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
-                    [+VAT] 당월 출고 된 금액 입니다.
-                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                </div>
-
-                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    <span id="titleShippedJ">8월 당월 출고 매출금액</span> <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
-                </div>
-                <div class="text-2xl font-bold text-gray-700 mt-2" id="valShippedJ">0</div>
-                <span class="text-xs text-gray-400 mt-1">백만원</span>
-            </div>
-
-            <!-- 4. 당월 총 입금 (수금액) -->
-            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <div class="absolute z-50 w-[190px] p-3 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
-                    당월 입금처리 된 금액 입니다.
-                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                </div>
-
-                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    당월 총 입금 (수금액) <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
-                </div>
-                <div class="text-2xl font-bold text-brand-teal mt-2" id="valCollected">0</div>
-                <span class="text-xs text-gray-400 mt-1">백만원</span>
-            </div>
-
-            <!-- 5. 총 채권 잔액 (현 기준 잔액) -->
-            <div class="kpi-card flex flex-col items-center justify-center text-center relative group">
-                <div class="absolute z-50 w-[290px] p-3 bottom-full right-[-10px] md:left-1/2 md:-translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-left leading-relaxed rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <span class="font-bold text-brand-teal mb-1 block">상세설명</span>
-                    [전월 마감 후 잔액] + [매출 미처리 누적금액] + [당월 출고 매출금액] - [당월 총 입금 (수금액)]
-                    <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 right-6 md:right-auto md:left-1/2 md:-translate-x-1/2"></div>
-                </div>
-
-                <div class="card-title w-full text-center flex items-center justify-center gap-1.5 cursor-help">
-                    총 채권 잔액 (현 기준 잔액) <i class="fa-regular fa-circle-question text-gray-400 font-normal"></i>
-                </div>
-                <div class="text-2xl font-bold text-gray-700 mt-2" id="valCurrent">0</div>
-                <span class="text-xs text-gray-400 mt-1">백만원</span>
-                
-                <!-- 동적 장기미수 툴팁 및 버튼 -->
-                <div class="mt-3 pt-3 border-t border-gray-100 w-full cursor-pointer hover:bg-red-50/50 transition rounded group/btn relative" onclick="openModal()">
-                    <div class="absolute z-50 w-[max-content] px-3 py-2 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-center rounded-lg shadow-xl opacity-0 invisible group-hover/btn:opacity-100 group-hover/btn:visible transition-all duration-200 whitespace-nowrap">
-                        <span class="dyn-lt">장기미수</span>
-                        <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                    </div>
-
-                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover/btn:text-brand-red transition">
-                        <i class="fa-solid fa-triangle-exclamation text-brand-red"></i> <span class="dyn-lt font-semibold">장기미수</span>
-                    </div>
-                    <div class="text-sm font-bold text-brand-red mt-1" id="valLongterm">0</div>
-                </div>
-
-                <!-- 회수 불능 채권 버튼 (신규 추가) -->
-                <div class="mt-2 pt-2 border-t border-gray-100 w-full cursor-pointer hover:bg-gray-100/70 transition rounded group/btn2 relative" onclick="openUncollectibleModal()">
-                    <div class="absolute z-50 w-[max-content] px-3 py-2 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-[12px] text-center rounded-lg shadow-xl opacity-0 invisible group-hover/btn2:opacity-100 group-hover/btn2:visible transition-all duration-200 whitespace-nowrap">
-                        <span>회수 불능 채권 (영업종료/폐업 영업담당자 확인)</span>
-                        <div class="absolute w-3 h-3 bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2"></div>
-                    </div>
-
-                    <div class="text-[11px] text-gray-500 flex items-center justify-center gap-1 group-hover/btn2:text-gray-700 transition">
-                        <i class="fa-solid fa-ban text-gray-500"></i> <span class="font-semibold text-gray-600">회수 불능 채권</span>
-                    </div>
-                    <div class="text-sm font-bold text-gray-600 mt-1" id="valUncollectible">0</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            <!-- Dept Summary List -->
-            <div class="kpi-card flex flex-col overflow-hidden">
-                <div class="card-title flex justify-between items-center">
-                    <span>부서별 종합 현황</span>
-                    <span class="text-[10px] font-normal text-white bg-brand-blue px-2 py-1 rounded">Click row to view details</span>
-                </div>
-                <div class="overflow-x-auto overflow-y-auto flex-grow" style="max-height: 300px;">
-                    <table class="data-list min-w-[600px]">
-                        <thead class="sticky top-0 bg-white">
-                            <tr>
-                                <th>부서명</th>
-                                <th class="text-right">전월미수</th>
-                                <th class="text-right">출고처리</th>
-                                <th class="text-right">당월수금</th>
-                                <th class="text-right font-bold text-gray-700">현잔액</th>
-                                <th class="text-right text-brand-red dyn-lt">장기미수</th>
-                            </tr>
-                        </thead>
-                        <tbody id="deptTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Dept Bar Chart -->
-            <div class="kpi-card">
-                <div class="card-title">부서별 수금 진척 현황</div>
-                <div class="h-64 w-full relative">
-                    <canvas id="deptBarChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6">
-            <!-- Manager Summary List -->
-            <div class="kpi-card flex flex-col overflow-hidden">
-                <div class="card-title flex justify-between items-center">
-                    <span>담당자별 현황</span>
-                    <span class="text-[10px] font-normal text-white bg-brand-blue px-2 py-1 rounded">Click to view clients</span>
-                </div>
-                <div class="overflow-x-auto overflow-y-auto flex-grow pr-2" style="max-height: 400px;">
-                    <table class="data-list min-w-[600px]">
-                        <thead class="sticky top-0 bg-white shadow-sm z-10">
-                            <tr>
-                                <th class="px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('manager')">담당자(부서) <i id="sortIconMgr_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('prev')">전월미수 <i id="sortIconMgr_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('shipped')">출고처리 <i id="sortIconMgr_shipped" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('collected')">당월수금 <i id="sortIconMgr_collected" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('current')">현잔액 <i id="sortIconMgr_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortManagerTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIconMgr_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody id="managerTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Client Details (연령 분석) -->
-            <div class="kpi-card flex flex-col overflow-hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="card-title mb-0" id="clientDetailTitle">[거래처 상세 현황] 담당자를 선택하세요</div>
-                    <div class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                        <span class="text-brand-red font-bold">Red</span>: 장기미수 보유
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto overflow-y-auto flex-grow border border-gray-100 rounded bg-gray-50/50 p-2" style="max-height: 400px;">
-                    <table class="data-list bg-white min-w-[600px]">
-                        <thead class="sticky top-0 bg-white shadow-sm z-10">
-                            <tr>
-                                <th class="px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('client')">거래처명 <i id="sortIcon_client" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('prev')">전월미수 <i id="sortIcon_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('shipped')">출고처리 <i id="sortIcon_shipped" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('collected')">당월수금 <i id="sortIcon_collected" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('current')">현잔액 <i id="sortIcon_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month0')"><span class="dyn-m0">당월발생분</span> <i id="sortIcon_month0" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month1')"><span class="dyn-m1">1개월전</span> <i id="sortIcon_month1" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('month2')"><span class="dyn-m2">2개월전</span> <i id="sortIcon_month2" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                                <th class="text-right px-2 cursor-pointer hover:text-blue-600 select-none" onclick="sortClientTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIcon_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientTableBody">
-                            <tr><td colspan="9" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!-- ==================== LOGIN GATE ==================== -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="gate-mark">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="square">
+        <rect x="3.5" y="10.5" width="17" height="10.5"></rect>
+        <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"></path>
+      </svg>
     </div>
-
-    <!-- Dept Modal (부서별 상세 모달) -->
-    <div id="deptModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-building text-brand-blue"></i>
-                    <span id="deptModalTitle">부서 상세 현황</span>
-                </h3>
-                <button onclick="closeDeptModal()" class="text-gray-400 hover:text-gray-700 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-grow">
-                <table class="data-list w-full">
-                    <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm">
-                        <tr>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('dept')">부서 <i id="sortIconDept_dept" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('manager')">담당자 <i id="sortIconDept_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('client')">거래처명 <i id="sortIconDept_client" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('prev')">전월미수 <i id="sortIconDept_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('current')">현잔액 <i id="sortIconDept_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('month0')"><span class="dyn-m0">당월발생</span> <i id="sortIconDept_month0" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('month1')"><span class="dyn-m1">1개월전</span> <i id="sortIconDept_month1" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('month2')"><span class="dyn-m2">2개월전</span> <i id="sortIconDept_month2" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right font-bold text-brand-red whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortDeptDetailTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIconDept_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="deptDetailTableBody"></tbody>
-                </table>
-            </div>
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-                <button onclick="closeDeptModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium text-sm">닫기</button>
-            </div>
-        </div>
+    <h1>채권 관리 대시보드</h1>
+    <p class="gate-sub">한국맥널티(주) 커피사업부 · 접근 권한이 있는 사용자만 열람할 수 있습니다.</p>
+    <form id="gateForm" autocomplete="off">
+      <label class="gate-lb" for="pw">비밀번호</label>
+      <div class="pw-wrap">
+        <input id="pw" type="password" autocomplete="current-password" placeholder="비밀번호 입력"
+               inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+        <button type="button" class="pw-eye" id="pwEye" onclick="togglePwView()">보기</button>
+      </div>
+      <div class="gate-msg" id="gateMsg"></div>
+      <button type="submit" id="gateBtn">확인</button>
+    </form>
+    <div class="gate-foot">
+      <button type="button" class="linkbtn" onclick="pickDataFile()">엑셀 파일로 열기</button>
+      <button type="button" class="linkbtn" onclick="toggleGateHelp()">도움말</button>
     </div>
-
-    <!-- Long-term Modal (장기미수 정렬 지원 업데이트) -->
-    <div id="longTermModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
-                    <span class="dyn-lt">장기미수</span> 거래처 상세 명단 (원 단위)
-                </h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-grow">
-                <table class="data-list w-full">
-                    <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm">
-                        <tr>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('dept')">부서 <i id="sortIconLT_dept" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('manager')">담당자 <i id="sortIconLT_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('client')">거래처명 <i id="sortIconLT_client" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('prev')">전월미수 <i id="sortIconLT_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('current')">현잔액 <i id="sortIconLT_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('month0')"><span class="dyn-m0">당월발생</span> <i id="sortIconLT_month0" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('month1')"><span class="dyn-m1">1개월전</span> <i id="sortIconLT_month1" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('month2')"><span class="dyn-m2">2개월전</span> <i id="sortIconLT_month2" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right font-bold text-brand-red whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortLongTermTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIconLT_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="longTermTableBody"></tbody>
-                </table>
-            </div>
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-                <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium text-sm">닫기</button>
-            </div>
-        </div>
+    <div id="gateHelp" class="gate-msg ok" hidden style="margin-top:14px;line-height:1.7">
+      데이터는 <b>암호화된 파일(data.enc)</b>로 보관되며, 비밀번호를 모르면 내용을 열 수 없습니다.
+      비밀번호를 분실한 경우 관리자(시스템 담당)에게 문의하세요.
     </div>
+  </div>
+</div>
 
-    <!-- Uncollectible Modal (회수 불능 채권 모달 - 신규 추가) -->
-    <div id="uncollectibleModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-ban text-gray-600"></i>
-                    회수 불능 채권 거래처 상세 명단 (원 단위)
-                </h3>
-                <button onclick="closeUncollectibleModal()" class="text-gray-400 hover:text-gray-700 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-grow">
-                <table class="data-list w-full">
-                    <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm">
-                        <tr>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('dept')">부서 <i id="sortIconUC_dept" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('manager')">담당자 <i id="sortIconUC_manager" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('client')">거래처명 <i id="sortIconUC_client" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('prev')">전월미수 <i id="sortIconUC_prev" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('current')">현잔액 <i id="sortIconUC_current" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('month0')"><span class="dyn-m0">당월발생</span> <i id="sortIconUC_month0" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('month1')"><span class="dyn-m1">1개월전</span> <i id="sortIconUC_month1" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('month2')"><span class="dyn-m2">2개월전</span> <i id="sortIconUC_month2" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                            <th class="p-2 text-right font-bold text-gray-700 whitespace-nowrap cursor-pointer hover:text-blue-600 select-none" onclick="sortUncollectibleTable('longterm')"><span class="dyn-lt">장기미수</span> <i id="sortIconUC_longterm" class="fa-solid fa-sort text-[10px] text-gray-400"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="uncollectibleTableBody"></tbody>
-                </table>
-            </div>
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-                <button onclick="closeUncollectibleModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium text-sm">닫기</button>
-            </div>
+<!-- ==================== APP ==================== -->
+<div id="app" hidden>
+
+  <header class="top">
+    <div class="top-in">
+      <div class="top-l">
+        <h1>한국맥널티(주) 커피사업부 채권 관리 대시보드</h1>
+        <div class="top-meta">
+          <span class="badge" id="dataBaseDateContainer" hidden><i class="badge-dot"></i><span id="dataBaseDateDisplay"></span></span>
+          <span id="updateTimeDisplay"></span>
+          <span id="loadState"></span>
         </div>
-    </div>
-
-    <!-- Search Modal -->
-    <div id="searchModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass text-brand-teal"></i>
-                    거래처 검색 결과
-                </h3>
-                <button onclick="closeSearchModal()" class="text-gray-400 hover:text-gray-700 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-grow" id="searchResultContent"></div>
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-                <button onclick="closeSearchModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium text-sm">닫기</button>
-            </div>
+      </div>
+      <div class="top-r">
+        <input type="text" id="clientSearchInput" class="inp" placeholder="거래처명 검색" onkeypress="handleSearch(event)">
+        <button class="btn ghost" onclick="searchClient()">검색</button>
+        <button class="btn ghost" onclick="pickDataFile()" title="Data.xlsx 로 즉시 갱신">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M12 17V4M6 10l6-6 6 6M4 20h16"/></svg>
+          엑셀 업로드
+        </button>
+        <div class="menu">
+          <button class="btn ghost" onclick="toggleMenu(event)" title="데이터/보안 관리">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+            관리
+          </button>
+          <div class="menu-list" id="menuList">
+            <button onclick="exportEncrypted()">암호화 데이터 파일 생성<small>현재 데이터를 data.enc 로 내려받습니다 (배포용)</small></button>
+            <button onclick="changePassword()">비밀번호 변경<small>변경 후 새 data.enc 를 반드시 배포하세요</small></button>
+            <button onclick="downloadCurrentJson()">화면 데이터 백업(CSV)<small>표시 중인 거래처 내역을 CSV 로 저장</small></button>
+            <button onclick="lockApp()">잠금</button>
+          </div>
         </div>
+      </div>
     </div>
-
-    <!-- JAVASCRIPT -->
-    <script>
-        const formatKRW = (num) => new Intl.NumberFormat('ko-KR').format(Math.round(num));
-        const formatMil = (num) => new Intl.NumberFormat('ko-KR').format(Math.round(num / 1000000));
-
-        let rawData = [];
-        let deptData = {};
-        let managerData = {};
-        let longTermClients = [];
-        let uncollectibleClients = []; // 회수 불능 채권 리스트
-        let chartInstance = null;
-
-        // 클라이언트(거래처) 정렬 상태
-        let activeManagerName = null;
-        let clientSortColumn = 'current';
-        let clientSortAsc = false;
-
-        // 담당자 정렬 상태
-        let managerSortColumn = 'manager'; 
-        let managerSortAsc = true;
-        
-        // 부서 모달 정렬 상태
-        let activeDeptName = null;
-        let deptSortColumn = 'current';
-        let deptSortAsc = false;
-
-        // 장기미수 모달 정렬 상태
-        let longTermSortColumn = 'longterm';
-        let longTermSortAsc = false;
-
-        // 회수 불능 채권 모달 정렬 상태
-        let uncollectibleSortColumn = 'current';
-        let uncollectibleSortAsc = false;
-
-        // 동적 헤더 타이틀 저장 (기본값)
-        let dynamicHeaders = { 
-            m0: '당월 발생분', 
-            m1: '1개월전 발생분', 
-            m2: '2개월전 발생분', 
-            lt: '장기미수',
-            shippedI: '8월 이전 매출 미처리 누적금액',
-            shippedJ: '8월 당월 출고 매출금액'
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initChart();
-            loadServerData();
-        });
-
-        // HTML 내의 모든 동적 텍스트 클래스 및 제목 업데이트
-        function updateDynamicHeaders() {
-            document.querySelectorAll('.dyn-m0').forEach(el => el.innerText = dynamicHeaders.m0);
-            document.querySelectorAll('.dyn-m1').forEach(el => el.innerText = dynamicHeaders.m1);
-            document.querySelectorAll('.dyn-m2').forEach(el => el.innerText = dynamicHeaders.m2);
-            document.querySelectorAll('.dyn-lt').forEach(el => el.innerText = dynamicHeaders.lt);
-            
-            // KPI 카드 제목 동적 업데이트
-            const titleShippedI = document.getElementById('titleShippedI');
-            if(titleShippedI) titleShippedI.innerText = dynamicHeaders.shippedI;
-            
-            const titleShippedJ = document.getElementById('titleShippedJ');
-            if(titleShippedJ) titleShippedJ.innerText = dynamicHeaders.shippedJ;
-        }
-
-        function initChart() {
-            try {
-                const canvas = document.getElementById('deptBarChart');
-                if(!canvas) return;
-                const ctx = canvas.getContext('2d');
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [] },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
-            } catch (e) {
-                console.warn("차트 초기화 중 오류가 발생했습니다.", e);
-            }
-        }
-
-        function loadServerData() {
-            fetch('Data.xlsx')
-                .then(response => {
-                    if (!response.ok) throw new Error("File not found");
-                    return response.arrayBuffer();
-                })
-                .then(buffer => {
-                    const workbook = XLSX.read(buffer, { type: 'array' });
-                    let sheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'data') || workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    
-                    const b3Cell = worksheet['B3'];
-                    if (b3Cell) {
-                        document.getElementById('dataBaseDateDisplay').innerText = (b3Cell.w || b3Cell.v);
-                        document.getElementById('dataBaseDateContainer').classList.remove('hidden');
-                    } else {
-                        document.getElementById('dataBaseDateContainer').classList.add('hidden');
-                    }
-
-                    const b4Cell = worksheet['B4'];
-                    if (b4Cell) {
-                        document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
-                    }
-
-                    // 엑셀 I5, J5, N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
-                    if (worksheet['I5']) dynamicHeaders.shippedI = String(worksheet['I5'].w || worksheet['I5'].v).trim();
-                    if (worksheet['J5']) dynamicHeaders.shippedJ = String(worksheet['J5'].w || worksheet['J5'].v).trim();
-                    if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
-                    if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
-                    if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
-                    if (worksheet['Q5']) dynamicHeaders.lt = String(worksheet['Q5'].w || worksheet['Q5'].v).trim();
-                    updateDynamicHeaders();
-
-                    const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
-                    processData(jsonRows);
-                })
-                .catch(err => {
-                    console.log("로컬환경 또는 파일을 찾을 수 없어 데모 데이터를 로드합니다.", err);
-                    loadMockData(); 
-                });
-        }
-
-        // 각 모달들 열고 닫는 함수
-        function openModal() { renderLongTermTable(); document.getElementById('longTermModal').classList.add('active'); }
-        function closeModal() { document.getElementById('longTermModal').classList.remove('active'); }
-        
-        function openUncollectibleModal() { renderUncollectibleTable(); document.getElementById('uncollectibleModal').classList.add('active'); }
-        function closeUncollectibleModal() { document.getElementById('uncollectibleModal').classList.remove('active'); }
-
-        function closeSearchModal() { document.getElementById('searchModal').classList.remove('active'); }
-        function closeDeptModal() { document.getElementById('deptModal').classList.remove('active'); }
-        
-        function handleSearch(event) { if (event.key === 'Enter') searchClient(); }
-        
-        function searchClient() {
-            const query = document.getElementById('clientSearchInput').value.trim().toLowerCase();
-            if (!query) {
-                alert("검색할 거래처명을 입력해주세요.");
-                return;
-            }
-            const results = rawData.filter(r => r.client.toLowerCase().includes(query));
-            const contentDiv = document.getElementById('searchResultContent');
-            
-            if (results.length === 0) {
-                contentDiv.innerHTML = `<div class="text-center py-10 text-gray-500">"${query}"에 대한 검색 결과를 찾을 수 없습니다.</div>`;
-            } else {
-                let html = `<table class="data-list w-full"><thead class="bg-gray-50 sticky top-0"><tr>
-                    <th class="p-2">거래처명</th><th class="p-2">부서</th><th class="p-2">담당자</th>
-                    <th class="p-2 text-right">전월미수</th><th class="p-2 text-right">출고처리</th>
-                    <th class="p-2 text-right">당월수금</th><th class="p-2 text-right">현잔액</th>
-                    <th class="p-2 text-right dyn-lt">${dynamicHeaders.lt}</th>
-                    </tr></thead><tbody>`;
-                results.forEach(r => {
-                    let ltColor = r.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
-                    html += `<tr class="border-b border-gray-100 hover:bg-gray-50">
-                        <td class="p-2 font-bold">${r.client}</td>
-                        <td class="p-2 text-xs text-gray-500">${r.dept}</td>
-                        <td class="p-2 text-xs font-bold">${r.manager}</td>
-                        <td class="p-2 text-right text-xs text-gray-500">${formatKRW(r.prev)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500">${formatKRW(r.shipped)}</td>
-                        <td class="p-2 text-right text-xs text-brand-teal">${formatKRW(r.collected)}</td>
-                        <td class="p-2 text-right text-xs font-bold text-gray-700">${formatKRW(r.current)}</td>
-                        <td class="p-2 text-right text-xs ${ltColor}">${formatKRW(r.longterm)}</td>
-                    </tr>`;
-                });
-                html += `</tbody></table>`;
-                contentDiv.innerHTML = html;
-            }
-            document.getElementById('searchModal').classList.add('active');
-        }
-
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    let sheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'data') || workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    
-                    const b3Cell = worksheet['B3'];
-                    if (b3Cell) {
-                        document.getElementById('dataBaseDateDisplay').innerText = (b3Cell.w || b3Cell.v);
-                        document.getElementById('dataBaseDateContainer').classList.remove('hidden');
-                    } else {
-                        document.getElementById('dataBaseDateContainer').classList.add('hidden');
-                    }
-
-                    const b4Cell = worksheet['B4'];
-                    if (b4Cell) {
-                        document.getElementById('updateTimeDisplay').innerText = `(Data 갱신: ${b4Cell.w || b4Cell.v})`;
-                    }
-
-                    // 엑셀 I5, J5, N5, O5, P5, Q5 셀 값 직접 읽어와서 헤더 세팅
-                    if (worksheet['I5']) dynamicHeaders.shippedI = String(worksheet['I5'].w || worksheet['I5'].v).trim();
-                    if (worksheet['J5']) dynamicHeaders.shippedJ = String(worksheet['J5'].w || worksheet['J5'].v).trim();
-                    if (worksheet['N5']) dynamicHeaders.m0 = String(worksheet['N5'].w || worksheet['N5'].v).trim();
-                    if (worksheet['O5']) dynamicHeaders.m1 = String(worksheet['O5'].w || worksheet['O5'].v).trim();
-                    if (worksheet['P5']) dynamicHeaders.m2 = String(worksheet['P5'].w || worksheet['P5'].v).trim();
-                    if (worksheet['Q5']) dynamicHeaders.lt = String(worksheet['Q5'].w || worksheet['Q5'].v).trim();
-                    updateDynamicHeaders();
-
-                    const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
-                    processData(jsonRows);
-                } catch (error) {
-                    console.error("Excel parsing error:", error);
-                    alert("데이터 처리 중 오류가 발생했습니다.\n상세 사유: " + error.message);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        const parseNum = (val) => {
-            if (typeof val === 'number') return val;
-            if (!val) return 0;
-            let str = String(val).replace(/,/g, '').trim();
-            if (str.startsWith('(') && str.endsWith(')')) str = '-' + str.slice(1, -1);
-            const num = parseFloat(str);
-            return isNaN(num) ? 0 : num;
-        };
-
-        function processData(jsonRows) {
-            rawData = [];
-            deptData = {};
-            managerData = {};
-            longTermClients = [];
-            uncollectibleClients = []; // 초기화
-            activeManagerName = null;
-            document.getElementById('clientDetailTitle').innerText = '[거래처 상세 현황] 담당자를 선택하세요';
-            document.getElementById('clientTableBody').innerHTML = '<tr><td colspan="9" class="text-center py-10 text-gray-400">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
-
-            let dataStarted = false;
-            let lastDept = "미지정부서";
-            let lastManager = "미지정담당자";
-
-            for (let i = 0; i < jsonRows.length; i++) {
-                let row = jsonRows[i];
-                if (!row) continue;
-
-                let b = String(row.B || '').trim();
-                let c = String(row.C || '').trim();
-                let d = String(row.D || '').trim();
-
-                // 헤더 스캐닝 및 데이터 시작 분기
-                if (!dataStarted) {
-                    if (b.includes('거래처') || b === '거래처명') {
-                        dataStarted = true;
-                        continue;
-                    }
-                    if (i > 7) dataStarted = true; // 강제 시작점 보장
-                    continue;
-                }
-
-                const rowStr = Object.values(row).join('').replace(/\s+/g, '');
-                if (rowStr === '' || rowStr.includes('총합계') || rowStr.includes('합계') || rowStr.includes('총계') || rowStr.includes('소계') || rowStr.includes('#미등록')) {
-                    continue;
-                }
-
-                if (c) lastDept = c; else c = lastDept;
-                if (d) lastManager = d; else d = lastManager;
-                if (!b) b = '미지정거래처';
-
-                let prev = parseNum(row.H);
-                let shipped_i = parseNum(row.I);
-                let shipped_j = parseNum(row.J);
-                let shipped = shipped_i + shipped_j;
-                let collected = parseNum(row.K);
-                let current = parseNum(row.L);
-                
-                // 연령별 채권 데이터 파싱
-                let month0 = parseNum(row.N);
-                let month1 = parseNum(row.O);
-                let month2 = parseNum(row.P);
-                let longterm = parseNum(row.Q);
-
-                if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0) continue;
-
-                const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm };
-
-                // 부서명이 '회수 불능 채권'일 경우 대시보드 일반 내역에서 완전 제외 및 별도 수집
-                if (c === '회수 불능 채권' || c.replace(/\s+/g, '') === '회수불능채권') {
-                    uncollectibleClients.push(record);
-                    continue;
-                }
-
-                rawData.push(record);
-
-                if (longterm > 0) longTermClients.push(record);
-
-                if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0 };
-                deptData[c].prev += prev;
-                deptData[c].shipped += shipped;
-                deptData[c].shipped_i += shipped_i;
-                deptData[c].shipped_j += shipped_j;
-                deptData[c].collected += collected;
-                deptData[c].current += current;
-                deptData[c].month0 += month0;
-                deptData[c].month1 += month1;
-                deptData[c].month2 += month2;
-                deptData[c].longterm += longterm;
-
-                if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, clients: [] };
-                managerData[d].prev += prev;
-                managerData[d].shipped += shipped;
-                managerData[d].shipped_i += shipped_i;
-                managerData[d].shipped_j += shipped_j;
-                managerData[d].collected += collected;
-                managerData[d].current += current;
-                managerData[d].month0 += month0;
-                managerData[d].month1 += month1;
-                managerData[d].month2 += month2;
-                managerData[d].longterm += longterm;
-                managerData[d].clients.push(record);
-            }
-
-            if (rawData.length === 0 && uncollectibleClients.length === 0) {
-                loadMockData();
-                return;
-            }
-
-            updateDashboardUI();
-        }
-
-        function updateDashboardUI() {
-            let totalPrev = 0, totalShipped = 0, totalShippedI = 0, totalShippedJ = 0, totalCollected = 0, totalCurrent = 0, totalLongTerm = 0;
-            Object.values(deptData).forEach(d => {
-                totalPrev += d.prev; 
-                totalShipped += d.shipped; 
-                totalShippedI += d.shipped_i; 
-                totalShippedJ += d.shipped_j; 
-                totalCollected += d.collected; 
-                totalCurrent += d.current; 
-                totalLongTerm += d.longterm; // 전체 장기미수 합계
-            });
-
-            // 회수 불능 채권 총액 계산
-            let totalUncollectible = uncollectibleClients.reduce((sum, c) => sum + c.current, 0);
-
-            document.getElementById('valPrev').innerText = formatMil(totalPrev);
-            document.getElementById('valShippedI').innerText = formatMil(totalShippedI);
-            document.getElementById('valShippedJ').innerText = formatMil(totalShippedJ);
-            document.getElementById('valCollected').innerText = formatMil(totalCollected);
-            document.getElementById('valCurrent').innerText = formatMil(totalCurrent);
-            document.getElementById('valLongterm').innerText = formatKRW(totalLongTerm);
-            document.getElementById('valUncollectible').innerText = formatKRW(totalUncollectible);
-
-            const deptTbody = document.getElementById('deptTableBody');
-            deptTbody.innerHTML = '';
-            
-            let chartLabels = [];
-            let chartData = { prev: [], shipped: [], collected: [], current: [], longterm: [] };
-
-            Object.entries(deptData).forEach(([dept, data]) => {
-                // 부서 행 클릭 시 모달창 열리도록 onclick 속성 추가
-                deptTbody.innerHTML += `
-                    <tr class="hover:bg-gray-50 clickable-row" onclick="openDeptModal('${dept}')">
-                        <td class="font-bold text-gray-700 cursor-pointer text-brand-blue underline decoration-brand-blue/30 underline-offset-4">${dept}</td>
-                        <td class="text-right text-gray-500">${formatKRW(data.prev)}</td>
-                        <td class="text-right text-gray-500">${formatKRW(data.shipped)}</td>
-                        <td class="text-right text-brand-teal font-medium">${formatKRW(data.collected)}</td>
-                        <td class="text-right font-bold text-gray-700">${formatKRW(data.current)}</td>
-                        <td class="text-right font-bold text-brand-red">${formatKRW(data.longterm)}</td>
-                    </tr>
-                `;
-                chartLabels.push(dept);
-                chartData.prev.push(data.prev / 1000000);
-                chartData.shipped.push(data.shipped / 1000000);
-                chartData.collected.push(data.collected / 1000000);
-                chartData.current.push(data.current / 1000000);
-                chartData.longterm.push(data.longterm / 1000000);
-            });
-
-            if (chartInstance) {
-                chartInstance.data.labels = chartLabels;
-                chartInstance.data.datasets = [
-                    { label: '전월 미수', data: chartData.prev, backgroundColor: '#94a3b8', borderRadius: 4 },
-                    { label: '출고 처리', data: chartData.shipped, backgroundColor: '#fcd34d', borderRadius: 4 },
-                    { label: '당월 수금', data: chartData.collected, backgroundColor: '#4fd1c5', borderRadius: 4 },
-                    { label: '현 잔액', data: chartData.current, backgroundColor: '#3b82f6', borderRadius: 4 },
-                    { label: dynamicHeaders.lt, data: chartData.longterm, backgroundColor: '#ef4444', borderRadius: 4 }
-                ];
-                chartInstance.update();
-            }
-
-            renderManagerTable();
-            renderLongTermTable();
-            renderUncollectibleTable();
-        }
-
-        // ================= 장기미수 모달 정렬 및 렌더링 =================
-        function sortLongTermTable(col) {
-            if (longTermSortColumn === col) {
-                longTermSortAsc = !longTermSortAsc;
-            } else {
-                longTermSortColumn = col;
-                longTermSortAsc = (col === 'client' || col === 'manager' || col === 'dept');
-            }
-            renderLongTermTable();
-        }
-
-        function updateLTSortIcons() {
-            ['dept', 'manager', 'client', 'prev', 'current', 'month0', 'month1', 'month2', 'longterm'].forEach(col => {
-                const icon = document.getElementById(`sortIconLT_${col}`);
-                if (!icon) return;
-                if (longTermSortColumn === col) {
-                    icon.className = longTermSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
-                } else {
-                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
-                }
-            });
-        }
-
-        function renderLongTermTable() {
-            const longTbody = document.getElementById('longTermTableBody');
-            if(!longTbody) return;
-            longTbody.innerHTML = '';
-
-            let sorted = [...longTermClients];
-            sorted.sort((a, b) => {
-                let valA = a[longTermSortColumn];
-                let valB = b[longTermSortColumn];
-                if (typeof valA === 'string') {
-                    return longTermSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
-                } else {
-                    return longTermSortAsc ? valA - valB : valB - valA;
-                }
-            });
-
-            sorted.forEach(c => {
-                longTbody.innerHTML += `
-                    <tr class="border-b border-gray-100 hover:bg-red-50/30 transition">
-                        <td class="p-2 text-xs text-gray-500 whitespace-nowrap">${c.dept}</td>
-                        <td class="p-2 text-xs font-bold whitespace-nowrap">${c.manager}</td>
-                        <td class="p-2 text-sm font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
-                        <td class="p-2 text-right text-xs text-gray-700 font-bold whitespace-nowrap">${formatKRW(c.current)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
-                        <td class="p-2 text-right text-sm font-bold text-brand-red whitespace-nowrap">${formatKRW(c.longterm)}</td>
-                    </tr>
-                `;
-            });
-
-            if (longTermClients.length === 0) {
-                longTbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500">장기 미매출 처리 된 거래처가 없습니다.</td></tr>`;
-            }
-            updateLTSortIcons();
-            updateDynamicHeaders();
-        }
-
-        // ================= 회수 불능 채권 모달 정렬 및 렌더링 =================
-        function sortUncollectibleTable(col) {
-            if (uncollectibleSortColumn === col) {
-                uncollectibleSortAsc = !uncollectibleSortAsc;
-            } else {
-                uncollectibleSortColumn = col;
-                uncollectibleSortAsc = (col === 'client' || col === 'manager' || col === 'dept');
-            }
-            renderUncollectibleTable();
-        }
-
-        function updateUCSortIcons() {
-            ['dept', 'manager', 'client', 'prev', 'current', 'month0', 'month1', 'month2', 'longterm'].forEach(col => {
-                const icon = document.getElementById(`sortIconUC_${col}`);
-                if (!icon) return;
-                if (uncollectibleSortColumn === col) {
-                    icon.className = uncollectibleSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
-                } else {
-                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
-                }
-            });
-        }
-
-        function renderUncollectibleTable() {
-            const ucTbody = document.getElementById('uncollectibleTableBody');
-            if(!ucTbody) return;
-            ucTbody.innerHTML = '';
-
-            let sorted = [...uncollectibleClients];
-            sorted.sort((a, b) => {
-                let valA = a[uncollectibleSortColumn];
-                let valB = b[uncollectibleSortColumn];
-                if (typeof valA === 'string') {
-                    return uncollectibleSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
-                } else {
-                    return uncollectibleSortAsc ? valA - valB : valB - valA;
-                }
-            });
-
-            sorted.forEach(c => {
-                ucTbody.innerHTML += `
-                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                        <td class="p-2 text-xs text-gray-500 whitespace-nowrap">${c.dept}</td>
-                        <td class="p-2 text-xs font-bold whitespace-nowrap">${c.manager}</td>
-                        <td class="p-2 text-sm font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
-                        <td class="p-2 text-right text-xs text-gray-700 font-bold whitespace-nowrap">${formatKRW(c.current)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
-                        <td class="p-2 text-right text-sm font-bold text-gray-600 whitespace-nowrap">${formatKRW(c.longterm)}</td>
-                    </tr>
-                `;
-            });
-
-            if (uncollectibleClients.length === 0) {
-                ucTbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500">등록된 회수 불능 채권 거래처가 없습니다.</td></tr>`;
-            }
-            updateUCSortIcons();
-            updateDynamicHeaders();
-        }
-
-        // ================= 부서 상세 모달 정렬 및 렌더링 =================
-        function openDeptModal(deptName) {
-            activeDeptName = deptName;
-            document.getElementById('deptModalTitle').innerText = `[${deptName}] 상세 거래처 명단 (원 단위)`;
-            renderDeptDetails();
-            document.getElementById('deptModal').classList.add('active');
-        }
-
-        function renderDeptDetails() {
-            const tbody = document.getElementById('deptDetailTableBody');
-            tbody.innerHTML = '';
-            
-            // rawData에서 해당 부서 데이터만 필터링
-            let filtered = rawData.filter(r => r.dept === activeDeptName);
-            
-            filtered.sort((a, b) => {
-                let valA = a[deptSortColumn];
-                let valB = b[deptSortColumn];
-                if (typeof valA === 'string') {
-                    return deptSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
-                } else {
-                    return deptSortAsc ? valA - valB : valB - valA;
-                }
-            });
-
-            filtered.forEach(c => {
-                let ltColor = c.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
-                tbody.innerHTML += `
-                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td class="p-2 text-xs text-gray-500 whitespace-nowrap">${c.dept}</td>
-                        <td class="p-2 text-xs font-bold whitespace-nowrap">${c.manager}</td>
-                        <td class="p-2 text-sm font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
-                        <td class="p-2 text-right text-xs text-gray-700 font-bold whitespace-nowrap">${formatKRW(c.current)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
-                        <td class="p-2 text-right text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
-                        <td class="p-2 text-right text-sm ${ltColor} whitespace-nowrap">${formatKRW(c.longterm)}</td>
-                    </tr>
-                `;
-            });
-            updateDeptSortIcons();
-            updateDynamicHeaders(); // 동적 텍스트 적용 (dyn-m0 등)
-        }
-
-        function sortDeptDetailTable(col) {
-            if (deptSortColumn === col) {
-                deptSortAsc = !deptSortAsc;
-            } else {
-                deptSortColumn = col;
-                deptSortAsc = (col === 'client' || col === 'manager' || col === 'dept');
-            }
-            renderDeptDetails();
-        }
-
-        function updateDeptSortIcons() {
-            ['dept', 'manager', 'client', 'prev', 'current', 'month0', 'month1', 'month2', 'longterm'].forEach(col => {
-                const icon = document.getElementById(`sortIconDept_${col}`);
-                if (!icon) return;
-                if (deptSortColumn === col) {
-                    icon.className = deptSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
-                } else {
-                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
-                }
-            });
-        }
-
-        // ================= 담당자 정렬 및 렌더링 =================
-        function renderManagerTable() {
-            const mgrTbody = document.getElementById('managerTableBody');
-            mgrTbody.innerHTML = '';
-            
-            const managerEntries = Object.entries(managerData);
-            
-            managerEntries.sort(([mgrA, dataA], [mgrB, dataB]) => {
-                let valA, valB;
-                
-                if (managerSortColumn === 'manager') {
-                    valA = dataA.dept + mgrA;
-                    valB = dataB.dept + mgrB;
-                } else {
-                    valA = dataA[managerSortColumn];
-                    valB = dataB[managerSortColumn];
-                }
-
-                if (typeof valA === 'string') {
-                    return managerSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
-                } else {
-                    return managerSortAsc ? valA - valB : valB - valA;
-                }
-            });
-
-            managerEntries.forEach(([manager, data]) => {
-                let statusColor = data.longterm > 0 ? 'text-brand-red font-bold' : 'text-gray-400';
-                const tr = document.createElement('tr');
-                tr.className = 'clickable-row border-b border-gray-100';
-                if (manager === activeManagerName) tr.classList.add('active'); 
-
-                tr.onclick = () => renderClientDetails(manager, tr);
-                
-                tr.innerHTML = `
-                    <td class="py-2 pl-2">
-                        <div class="font-bold text-gray-800">${manager}</div>
-                        <div class="text-[10px] text-gray-400">${data.dept}</div>
-                    </td>
-                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.prev)}</td>
-                    <td class="text-right text-gray-500 text-xs">${formatKRW(data.shipped)}</td>
-                    <td class="text-right text-brand-teal text-xs">${formatKRW(data.collected)}</td>
-                    <td class="text-right font-bold text-xs text-gray-600">${formatKRW(data.current)}</td>
-                    <td class="text-right text-xs ${statusColor}">${formatKRW(data.longterm)}</td>
-                `;
-                mgrTbody.appendChild(tr);
-            });
-            updateMgrSortIcons();
-        }
-
-        function sortManagerTable(col) {
-            if (managerSortColumn === col) {
-                managerSortAsc = !managerSortAsc;
-            } else {
-                managerSortColumn = col;
-                managerSortAsc = (col === 'manager'); 
-            }
-            renderManagerTable();
-        }
-
-        function updateMgrSortIcons() {
-            ['manager', 'prev', 'shipped', 'collected', 'current', 'longterm'].forEach(col => {
-                const icon = document.getElementById(`sortIconMgr_${col}`);
-                if (!icon) return;
-                if (managerSortColumn === col) {
-                    icon.className = managerSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
-                } else {
-                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
-                }
-            });
-        }
-
-        // ================= 거래처 연령 상세 리스트 =================
-        function renderClientDetails(managerName, rowElement) {
-            if (managerName) activeManagerName = managerName;
-            if (rowElement) {
-                document.querySelectorAll('.clickable-row').forEach(el => el.classList.remove('active'));
-                rowElement.classList.add('active');
-            }
-
-            const mData = managerData[activeManagerName];
-            if (!mData) return;
-
-            document.getElementById('clientDetailTitle').innerText = `[${activeManagerName}] 거래처 상세 현황`;
-            const tbody = document.getElementById('clientTableBody');
-            tbody.innerHTML = '';
-
-            let sortedClients = [...mData.clients];
-            sortedClients.sort((a, b) => {
-                let valA = a[clientSortColumn];
-                let valB = b[clientSortColumn];
-                if (typeof valA === 'string') {
-                    return clientSortAsc ? valA.localeCompare(valB, 'ko') : valB.localeCompare(valA, 'ko');
-                } else {
-                    return clientSortAsc ? valA - valB : valB - valA;
-                }
-            });
-
-            sortedClients.forEach(c => {
-                let ltColor = c.longterm > 0 ? 'text-brand-red' : 'text-gray-400';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50 transition-colors border-b border-gray-50">
-                        <td class="px-2 py-2 text-xs font-bold text-gray-700 whitespace-nowrap">${c.client}</td>
-                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.prev)}</td>
-                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.shipped)}</td>
-                        <td class="text-right px-2 text-xs text-brand-teal whitespace-nowrap">${formatKRW(c.collected)}</td>
-                        <td class="text-right px-2 text-xs font-bold text-gray-600 whitespace-nowrap">${formatKRW(c.current)}</td>
-                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month0)}</td>
-                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month1)}</td>
-                        <td class="text-right px-2 text-xs text-gray-500 whitespace-nowrap">${formatKRW(c.month2)}</td>
-                        <td class="text-right px-2 text-xs font-bold ${ltColor} whitespace-nowrap">${formatKRW(c.longterm)}</td>
-                    </tr>
-                `;
-            });
-            updateSortIcons();
-        }
-
-        function sortClientTable(col) {
-            if (clientSortColumn === col) {
-                clientSortAsc = !clientSortAsc;
-            } else {
-                clientSortColumn = col;
-                clientSortAsc = (col === 'client');
-            }
-            if (activeManagerName) {
-                renderClientDetails(null, null);
-            }
-        }
-
-        function updateSortIcons() {
-            ['client', 'prev', 'shipped', 'collected', 'current', 'month0', 'month1', 'month2', 'longterm'].forEach(col => {
-                const icon = document.getElementById(`sortIcon_${col}`);
-                if (!icon) return;
-                if (clientSortColumn === col) {
-                    icon.className = clientSortAsc ? "fa-solid fa-sort-up text-[11px] text-blue-600" : "fa-solid fa-sort-down text-[11px] text-blue-600";
-                } else {
-                    icon.className = "fa-solid fa-sort text-[10px] text-gray-400";
-                }
-            });
-        }
-
-        function loadMockData() {
-            dynamicHeaders = { 
-                m0: '8월 발생분', 
-                m1: '7월 발생분', 
-                m2: '6월 발생분', 
-                lt: '5월 이전 장기미수',
-                shippedI: '8월 이전 매출 미처리 누적금액',
-                shippedJ: '8월 당월 출고 매출금액'
-            };
-            updateDynamicHeaders();
-            const mockJSON = [
-                { B: '거래처명', N: '8월 발생분', O: '7월 발생분', P: '6월 발생분', Q: '5월 이전 장기미수' },
-                { B: '샘플거래처A', C: '기업영업팀', D: '홍길동', H: 10000000, I: 5000000, J: 5000000, K: 4000000, L: 16000000, N: 6000000, O: 5000000, P: 3000000, Q: 2000000 },
-                { B: '샘플거래처B', C: '온라인팀', D: '김철수', H: 20000000, I: 10000000, J: 5000000, K: 8000000, L: 27000000, N: 17000000, O: 10000000, P: 0, Q: 0 },
-                { B: '샘플부실업체X', C: '회수 불능 채권', D: '이영희', H: 15000000, I: 0, J: 0, K: 0, L: 15000000, N: 0, O: 0, P: 0, Q: 15000000 }
-            ];
-            processData(mockJSON);
-        }
-    </script>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ---------- HERO ---------- -->
+    <section class="hero">
+      <div class="kpi-main">
+        <div>
+          <div class="k-lb">총 채권 잔액 (현 기준 잔액)</div>
+          <div class="k-v num"><span id="valCurrent">0</span><span class="k-u">백만원</span></div>
+        </div>
+        <div class="k-foot">
+          <div class="f">전월 잔액 대비<b class="num" id="valDelta">–</b></div>
+          <div class="f">당월 수금률<b class="num" id="valRate">–</b></div>
+          <div class="f">거래처 수<b class="num" id="valClients">–</b></div>
+        </div>
+      </div>
+      <div class="risk-stack">
+        <div class="risk red" onclick="openModal()">
+          <div>
+            <div class="risk-lb">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"><path d="M12 3 2 20h20L12 3zM12 9v5M12 17h.01"/></svg>
+              <span class="dyn-lt">장기미수</span>
+            </div>
+            <div class="risk-v num"><span id="valLongterm">0</span><span class="u">원</span></div>
+            <div class="risk-note" id="ltNote">30일 이상 장기 미매출 잔액</div>
+          </div>
+          <div class="risk-go">거래처 명단 보기 →</div>
+        </div>
+        <div class="risk static" onclick="openUncollectibleModal()" style="cursor:pointer;border-left:3px solid var(--red)">
+          <div>
+            <div class="risk-lb">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"><circle cx="12" cy="12" r="9"/><path d="M6 18 18 6"/></svg>
+              회수 불능 채권
+            </div>
+            <div class="risk-v num" style="color:var(--ink-2)"><span id="valUncollectible">0</span><span class="u">원</span></div>
+            <div class="risk-note">영업종료·폐업 거래처 (영업담당자 확인)</div>
+          </div>
+          <div class="risk-go" style="color:var(--ink-3)">거래처 명단 보기 →</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- KPI STRIP ---------- -->
+    <section class="kpis">
+      <div class="kpi pos">
+        <div class="kpi-lb">전월 마감 후 잔액 <i class="info" onclick="toggleTip(event)">?</i></div>
+        <div class="kpi-v num"><span id="valPrev">0</span><span class="u">백만원</span></div>
+        <div class="tip">전월 마감 후 ERP상 이월 잔액입니다.<br>(ex. 데이터 기준일 10월 → 9월 말 매출/매입 마감 후 최종 잔액)</div>
+      </div>
+      <div class="kpi pos">
+        <div class="kpi-lb"><span id="titleShippedI">매출 미처리 누적금액</span> <i class="info" onclick="toggleTip(event)">?</i></div>
+        <div class="kpi-v num"><span id="valShippedI">0</span><span class="u">백만원</span></div>
+        <div class="tip">[+VAT] 전월 마감 후 ERP상 출고만 되고 매출로 넘기지 않은 금액입니다.<br>(주요사유: 거래처 마감 기준에 따른 정산 이월, 클레임으로 인한 정산 이월)</div>
+      </div>
+      <div class="kpi pos">
+        <div class="kpi-lb"><span id="titleShippedJ">당월 출고 매출금액</span> <i class="info" onclick="toggleTip(event)">?</i></div>
+        <div class="kpi-v num"><span id="valShippedJ">0</span><span class="u">백만원</span></div>
+        <div class="tip">[+VAT] 당월 출고된 금액입니다.</div>
+      </div>
+      <div class="kpi pos">
+        <div class="kpi-lb">당월 총 입금 (수금액) <i class="info" onclick="toggleTip(event)">?</i></div>
+        <div class="kpi-v num"><span id="valCollected">0</span><span class="u">백만원</span></div>
+        <div class="tip">당월 입금처리된 금액입니다. (총 채권 잔액에서 차감됩니다)</div>
+      </div>
+    </section>
+
+    <!-- ---------- WATERFALL ---------- -->
+    <section class="sec">
+      <div class="sec-h">
+        <div class="sec-t">채권 잔액 산식 (Bridge)</div>
+        <div class="sec-sub">단위: 백만원 · 계산식 = 전월 마감 후 잔액 + 매출 미처리 누적 + 당월 출고 − 당월 수금</div>
+      </div>
+      <div class="card">
+        <div class="wf-wrap">
+          <div class="wf" id="wf">
+            <div class="wf-col"><div class="wf-track"></div><div class="wf-lb">전월 마감 후 잔액</div></div>
+            <div class="wf-col"><div class="wf-track"></div><div class="wf-lb">매출 미처리 누적<span id="wfSubI"></span></div></div>
+            <div class="wf-col"><div class="wf-track"></div><div class="wf-lb">당월 출고<span id="wfSubJ"></span></div></div>
+            <div class="wf-col"><div class="wf-track"></div><div class="wf-lb">당월 수금<span>차감</span></div></div>
+            <div class="wf-col"><div class="wf-track"></div><div class="wf-lb">현 기준 잔액<span>총 채권</span></div></div>
+          </div>
+        </div>
+        <div class="wf-axis">
+          <span id="wfNote">막대 높이는 전체 금액 대비 비율입니다.</span>
+          <span>증감 <b class="num" id="wfDelta">–</b></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 부서별 종합 현황 ---------- -->
+    <section class="sec">
+      <div class="sec-h">
+        <div class="sec-t">부서별 종합 현황</div>
+        <div class="sec-sub">행을 선택하면 담당자·거래처 상세가 열립니다</div>
+      </div>
+      <div class="card">
+        <div class="tw">
+          <table class="tbl">
+            <thead><tr>
+              <th>부서명</th>
+              <th class="r">전월미수</th>
+              <th class="r">출고처리</th>
+              <th class="r">당월수금</th>
+              <th class="r">현잔액</th>
+              <th class="r"><span class="dyn-lt">장기미수</span></th>
+            </tr></thead>
+            <tbody id="deptTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 부서별 수금 진척 ---------- -->
+    <section class="sec">
+      <div class="sec-h">
+        <div class="sec-t">부서별 수금 진척 현황</div>
+        <div class="sec-sub">수금률 = 당월 수금 ÷ 전월 미수 · 40% 미만 적색</div>
+      </div>
+      <div class="card" id="deptProgress"></div>
+    </section>
+
+    <!-- ---------- 담당자별 현황 ---------- -->
+    <section class="sec">
+      <div class="sec-h">
+        <div class="sec-t">담당자별 현황</div>
+        <div class="sec-sub">담당자를 선택하면 아래에 거래처 상세가 표시됩니다</div>
+      </div>
+      <div class="card">
+        <div class="tw scroll-y">
+          <table class="tbl">
+            <thead><tr>
+              <th class="s" onclick="sortManagerTable('manager')">담당자 (부서) <i class="sort-i" id="sortIconMgr_manager">▲▼</i></th>
+              <th class="s r" onclick="sortManagerTable('prev')">전월미수 <i class="sort-i" id="sortIconMgr_prev">▲▼</i></th>
+              <th class="s r" onclick="sortManagerTable('shipped')">출고처리 <i class="sort-i" id="sortIconMgr_shipped">▲▼</i></th>
+              <th class="s r" onclick="sortManagerTable('collected')">당월수금 <i class="sort-i" id="sortIconMgr_collected">▲▼</i></th>
+              <th class="s r" onclick="sortManagerTable('current')">현잔액 <i class="sort-i" id="sortIconMgr_current">▲▼</i></th>
+              <th class="s r" onclick="sortManagerTable('longterm')"><span class="dyn-lt">장기미수</span> <i class="sort-i" id="sortIconMgr_longterm">▲▼</i></th>
+            </tr></thead>
+            <tbody id="managerTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 거래처 상세 ---------- -->
+    <section class="sec">
+      <div class="sec-h">
+        <div class="sec-t" id="clientDetailTitle">거래처 상세 현황 · 담당자를 선택하세요</div>
+        <div class="legend"><span><i style="background:#D92D20"></i>장기미수 보유</span><span><i style="background:#0A0A0A"></i>현재 잔액</span></div>
+      </div>
+      <div class="card">
+        <div class="tw scroll-y">
+          <table class="tbl wide">
+            <thead><tr>
+              <th class="s" onclick="sortClientTable('client')">거래처명 <i class="sort-i" id="sortIcon_client">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('prev')">전월미수 <i class="sort-i" id="sortIcon_prev">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('shipped')">출고처리 <i class="sort-i" id="sortIcon_shipped">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('collected')">당월수금 <i class="sort-i" id="sortIcon_collected">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('current')">현잔액 <i class="sort-i" id="sortIcon_current">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('month0')"><span class="dyn-m0">당월발생</span> <i class="sort-i" id="sortIcon_month0">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('month1')"><span class="dyn-m1">1개월전</span> <i class="sort-i" id="sortIcon_month1">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('month2')"><span class="dyn-m2">2개월전</span> <i class="sort-i" id="sortIcon_month2">▲▼</i></th>
+              <th class="s r" onclick="sortClientTable('longterm')"><span class="dyn-lt">장기미수</span> <i class="sort-i" id="sortIcon_longterm">▲▼</i></th>
+            </tr></thead>
+            <tbody id="clientTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="modal" id="longTermModal">
+  <div class="modal-box">
+    <div class="modal-h danger">
+      <h3><span class="dyn-lt">장기미수</span> 거래처 상세 명단 · 원 단위</h3>
+      <button class="x" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-b">
+      <div class="tw scroll-y">
+        <table class="tbl wide">
+          <thead><tr>
+            <th class="s" onclick="sortLongTermTable('dept')">부서 <i class="sort-i" id="sortIconLT_dept">▲▼</i></th>
+            <th class="s" onclick="sortLongTermTable('manager')">담당자 <i class="sort-i" id="sortIconLT_manager">▲▼</i></th>
+            <th class="s" onclick="sortLongTermTable('client')">거래처명 <i class="sort-i" id="sortIconLT_client">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('prev')">전월미수 <i class="sort-i" id="sortIconLT_prev">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('current')">현잔액 <i class="sort-i" id="sortIconLT_current">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('month0')"><span class="dyn-m0">당월발생</span> <i class="sort-i" id="sortIconLT_month0">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('month1')"><span class="dyn-m1">1개월전</span> <i class="sort-i" id="sortIconLT_month1">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('month2')"><span class="dyn-m2">2개월전</span> <i class="sort-i" id="sortIconLT_month2">▲▼</i></th>
+            <th class="s r" onclick="sortLongTermTable('longterm')"><span class="dyn-lt">장기미수</span> <i class="sort-i" id="sortIconLT_longterm">▲▼</i></th>
+          </tr></thead>
+          <tbody id="longTermTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn ghost" onclick="closeModal()">닫기</button></div>
+  </div>
+</div>
+
+<div class="modal" id="uncollectibleModal">
+  <div class="modal-box">
+    <div class="modal-h">
+      <h3>회수 불능 채권 거래처 상세 명단 · 원 단위</h3>
+      <button class="x" onclick="closeUncollectibleModal()">&times;</button>
+    </div>
+    <div class="modal-b">
+      <div class="pad"><div class="sec-sub">영업종료·폐업 등으로 회수가 어려운 거래처입니다. (영업담당자 확인 필요)</div></div>
+      <div class="tw scroll-y">
+        <table class="tbl wide">
+          <thead><tr>
+            <th class="s" onclick="sortUncollectibleTable('dept')">부서 <i class="sort-i" id="sortIconUC_dept">▲▼</i></th>
+            <th class="s" onclick="sortUncollectibleTable('manager')">담당자 <i class="sort-i" id="sortIconUC_manager">▲▼</i></th>
+            <th class="s" onclick="sortUncollectibleTable('client')">거래처명 <i class="sort-i" id="sortIconUC_client">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('prev')">전월미수 <i class="sort-i" id="sortIconUC_prev">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('current')">현잔액 <i class="sort-i" id="sortIconUC_current">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('month0')"><span class="dyn-m0">당월발생</span> <i class="sort-i" id="sortIconUC_month0">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('month1')"><span class="dyn-m1">1개월전</span> <i class="sort-i" id="sortIconUC_month1">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('month2')"><span class="dyn-m2">2개월전</span> <i class="sort-i" id="sortIconUC_month2">▲▼</i></th>
+            <th class="s r" onclick="sortUncollectibleTable('longterm')"><span class="dyn-lt">장기미수</span> <i class="sort-i" id="sortIconUC_longterm">▲▼</i></th>
+          </tr></thead>
+          <tbody id="uncollectibleTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn ghost" onclick="closeUncollectibleModal()">닫기</button></div>
+  </div>
+</div>
+
+<div class="modal" id="deptModal">
+  <div class="modal-box">
+    <div class="modal-h">
+      <h3 id="deptModalTitle">부서 상세 현황</h3>
+      <button class="x" onclick="closeDeptModal()">&times;</button>
+    </div>
+    <div class="modal-b">
+      <div class="tw scroll-y">
+        <table class="tbl wide">
+          <thead><tr>
+            <th class="s" onclick="sortDeptDetailTable('dept')">부서 <i class="sort-i" id="sortIconDept_dept">▲▼</i></th>
+            <th class="s" onclick="sortDeptDetailTable('manager')">담당자 <i class="sort-i" id="sortIconDept_manager">▲▼</i></th>
+            <th class="s" onclick="sortDeptDetailTable('client')">거래처명 <i class="sort-i" id="sortIconDept_client">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('prev')">전월미수 <i class="sort-i" id="sortIconDept_prev">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('shipped')">출고처리 <i class="sort-i" id="sortIconDept_shipped">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('collected')">당월수금 <i class="sort-i" id="sortIconDept_collected">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('current')">현잔액 <i class="sort-i" id="sortIconDept_current">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('month0')"><span class="dyn-m0">당월발생</span> <i class="sort-i" id="sortIconDept_month0">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('month1')"><span class="dyn-m1">1개월전</span> <i class="sort-i" id="sortIconDept_month1">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('month2')"><span class="dyn-m2">2개월전</span> <i class="sort-i" id="sortIconDept_month2">▲▼</i></th>
+            <th class="s r" onclick="sortDeptDetailTable('longterm')"><span class="dyn-lt">장기미수</span> <i class="sort-i" id="sortIconDept_longterm">▲▼</i></th>
+          </tr></thead>
+          <tbody id="deptDetailTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn ghost" onclick="closeDeptModal()">닫기</button></div>
+  </div>
+</div>
+
+<div class="modal" id="searchModal">
+  <div class="modal-box">
+    <div class="modal-h">
+      <h3>거래처 검색 결과</h3>
+      <button class="x" onclick="closeSearchModal()">&times;</button>
+    </div>
+    <div class="modal-b" id="searchResultContent"></div>
+    <div class="modal-f"><button class="btn ghost" onclick="closeSearchModal()">닫기</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<input type="file" id="excelUpload" accept=".xlsx,.xls" hidden onchange="handleExcelUpload(event)">
+
+<script>
+/* =====================================================================
+   채권 관리 대시보드 · 애플리케이션 스크립트
+   - 데이터 가공/집계 로직(processData, 부서·담당자 그룹핑, 정렬)은 기존과 동일
+   - 달라진 점: ① 비밀번호 잠금 + 암호화된 data.enc 로딩 ② 화면(디자인) ③ Mock 제거
+   ===================================================================== */
+const KEY_PW = 'mc_ar_pw';
+const DATA_URL = 'data.enc';
+
+const $ = (id) => document.getElementById(id);
+const formatKRW = (n) => new Intl.NumberFormat('ko-KR').format(Math.round(n || 0));
+const formatMil = (n) => new Intl.NumberFormat('ko-KR').format(Math.round((n || 0) / 1000000));
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const parseNum = (val) => {
+  if (typeof val === 'number') return isFinite(val) ? val : 0;
+  if (!val) return 0;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str.startsWith('(') && str.endsWith(')')) str = '-' + str.slice(1, -1);
+  const num = parseFloat(str);
+  return isNaN(num) ? 0 : num;
+};
+
+/* ---------------- state ---------------- */
+let rawData = [];
+let deptData = {};
+let managerData = {};
+let longTermClients = [];
+let uncollectibleClients = [];
+
+let activeManagerName = null;
+let clientSortColumn = 'current';   let clientSortAsc = false;
+let managerSortColumn = 'manager';  let managerSortAsc = true;
+let activeDeptName = null;
+let deptSortColumn = 'current';     let deptSortAsc = false;
+let longTermSortColumn = 'longterm';let longTermSortAsc = false;
+let uncollectibleSortColumn = 'current'; let uncollectibleSortAsc = false;
+
+let dynamicHeaders = {
+  m0: '당월 발생분', m1: '1개월전 발생분', m2: '2개월전 발생분', lt: '장기미수',
+  shippedI: '매출 미처리 누적금액', shippedJ: '당월 출고 매출금액'
+};
+
+let currentPayload = null;     // 마지막으로 로드된 데이터(재암호화용)
+let currentPassword = null;    // 잠금 해제에 사용한 비밀번호(세션 내에서만 사용)
+
+/* ---------------- crypto ---------------- */
+const b64ToBuf = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+const bufToB64 = (buf) => { const a = new Uint8Array(buf); let s = ''; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); };
+const ITER = 210000;
+
+async function deriveKey(pw, salt, iter) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: iter || ITER, hash: 'SHA-256' },
+    base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+  );
+}
+async function encryptPayload(payload, pw) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pw, salt, ITER);
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(payload)));
+  return { v: 1, kdf: 'PBKDF2-SHA256', iter: ITER, salt: bufToB64(salt), iv: bufToB64(iv), ct: bufToB64(ct) };
+}
+async function decryptPayload(env, pw) {
+  const key = await deriveKey(pw, b64ToBuf(env.salt), env.iter);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function fetchEnvelope() {
+  const res = await fetch(DATA_URL + '?_=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('NOFILE');
+  return res.json();
+}
+
+/* ---------------- gate ---------------- */
+function toggleGateHelp() { const el = $('gateHelp'); el.hidden = !el.hidden; }
+function pickDataFile() { $('excelUpload').click(); }
+function togglePwView() {
+  const el = $('pw');
+  const show = el.type === 'password';
+  el.type = show ? 'text' : 'password';
+  $('pwEye').textContent = show ? '숨기기' : '보기';
+  el.focus();
+}
+
+function setGateMsg(msg, kind) {
+  const el = $('gateMsg');
+  el.textContent = msg || '';
+  el.className = 'gate-msg' + (kind ? ' ' + kind : '');
+}
+/* 한글 입력 상태 감지 — 한국어 IME 가 켜진 채로 입력하면 mc8282 가 'ㅡㅊ8282' 로 들어갑니다 */
+const HAS_HANGUL = /[\u3131-\u318E\uAC00-\uD7A3]/;
+function koreanModeWarning(v) {
+  return HAS_HANGUL.test(v)
+    ? '한글 입력 상태입니다. 키보드를 영문(ABC)으로 전환해 주세요. 지금은 "' + v + '" 로 입력되었습니다.'
+    : '';
+}
+
+async function doUnlock(ev) {
+  ev.preventDefault();
+  const pw = $('pw').value.trim();
+  if (!pw) { setGateMsg('비밀번호를 입력해 주세요.'); return; }
+  const kw = koreanModeWarning(pw);
+  if (kw) { setGateMsg(kw, 'warn'); return; }
+  if (!window.crypto || !crypto.subtle) { setGateMsg('이 페이지는 https 환경에서만 열 수 있습니다.', 'warn'); return; }
+  try { guardAttempt(); } catch (e) { setGateMsg(e.msg, 'warn'); return; }
+
+  const btn = $('gateBtn');
+  btn.disabled = true; btn.textContent = '확인 중…';
+  setGateMsg('데이터를 복호화하는 중입니다…', 'ok');
+  try {
+    const env = await fetchEnvelope();
+    const payload = await decryptPayload(env, pw);
+    failCount = 0;
+    enterApp(payload, pw);
+  } catch (err) {
+    if (err && err.message === 'NOFILE') {
+      setGateMsg('data.enc 파일을 찾을 수 없습니다. index.html 과 같은 폴더에 올려주세요.', 'warn');
+    } else if (err && err.message === 'RATE') {
+      setGateMsg(err.msg, 'warn');
+    } else {
+      failCount++;
+      setGateMsg('비밀번호가 올바르지 않습니다. (영문/숫자 확인 · 대소문자 구분)' + (failCount >= 3 ? '  ' + (5 - failCount) + '회 더 틀리면 잠시 잠깁니다.' : ''));
+      $('pw').value = '';
+      $('pw').focus();
+    }
+  } finally {
+    btn.disabled = false; btn.textContent = '확인';
+  }
+}
+
+/* 시도 횟수 제한 — 무차별 대입 방지 (브라우저 기준 5회 실패 시 30초 대기) */
+let failCount = 0;
+function guardAttempt() {
+  if (failCount >= 5) {
+    const e = new Error('RATE');
+    e.msg = '비밀번호를 5회 잘못 입력했습니다. 잠시 후 다시 시도해 주세요.';
+    throw e;
+  }
+}
+
+async function boot() {
+  if (!window.crypto || !crypto.subtle) { setGateMsg('이 페이지는 https 환경에서만 열 수 있습니다.', 'warn'); return; }
+  const saved = sessionStorage.getItem(KEY_PW);
+  if (saved) {
+    try {
+      const env = await fetchEnvelope();
+      const payload = await decryptPayload(env, saved);
+      enterApp(payload, saved);
+      return;
+    } catch (e) { sessionStorage.removeItem(KEY_PW); }
+  }
+  setGateMsg('', '');
+}
+
+function enterApp(payload, pw) {
+  currentPayload = payload;
+  currentPassword = pw || null;
+  if (pw) { try { sessionStorage.setItem(KEY_PW, pw); } catch (e) {} }
+  applyMeta(payload);
+  processPayload(payload);
+  $('gate').hidden = true;
+  $('app').hidden = false;
+  $('loadState').textContent = '';
+}
+
+function lockApp() {
+  try { sessionStorage.removeItem(KEY_PW); } catch (e) {}
+  location.reload();
+}
+
+/* ---------------- meta / headers ---------------- */
+function monthFrom(dateStr) {
+  const m = String(dateStr || '').match(/(\d{4})[-./](\d{1,2})/);
+  return m ? parseInt(m[2], 10) : (new Date().getMonth() + 1);
+}
+function applyMeta(p) {
+  const h = p.headers || {};
+  const M = monthFrom(p.baseDate);
+  const pm = (n) => { let v = M - n; while (v < 1) v += 12; return v; };
+  const pick = (raw, gen) => {
+    if (raw === null || raw === undefined || raw === '') return gen;
+    const s = String(raw).trim();
+    if (/^\d{1,2}$/.test(s)) return gen;   // 엑셀 헤더셀이 월 숫자만 있는 경우 → 월 기반 라벨 자동 생성
+    return s;
+  };
+  dynamicHeaders.shippedI = pick(h.shippedI, M + '월 이전 매출 미처리 누적금액');
+  dynamicHeaders.shippedJ = pick(h.shippedJ, M + '월 당월 출고 매출금액');
+  dynamicHeaders.m0 = pick(h.m0, M + '월 발생분');
+  dynamicHeaders.m1 = pick(h.m1, pm(1) + '월 발생분');
+  dynamicHeaders.m2 = pick(h.m2, pm(2) + '월 발생분');
+  dynamicHeaders.lt = pick(h.lt, pm(3) + '월 이전 장기미수');
+
+  if (p.baseDate) {
+    $('dataBaseDateDisplay').textContent = '데이터 기준일 ' + p.baseDate;
+    $('dataBaseDateContainer').hidden = false;
+  }
+  $('updateTimeDisplay').textContent = p.updated ? ('Data 갱신 ' + p.updated) : '서버 반영 후 새로고침하면 갱신됩니다';
+  updateDynamicHeaders();
+}
+
+function updateDynamicHeaders() {
+  document.querySelectorAll('.dyn-m0').forEach((el) => (el.textContent = dynamicHeaders.m0));
+  document.querySelectorAll('.dyn-m1').forEach((el) => (el.textContent = dynamicHeaders.m1));
+  document.querySelectorAll('.dyn-m2').forEach((el) => (el.textContent = dynamicHeaders.m2));
+  document.querySelectorAll('.dyn-lt').forEach((el) => (el.textContent = dynamicHeaders.lt));
+  if ($('titleShippedI')) $('titleShippedI').textContent = dynamicHeaders.shippedI;
+  if ($('titleShippedJ')) $('titleShippedJ').textContent = dynamicHeaders.shippedJ;
+  if ($('wfSubI')) $('wfSubI').textContent = dynamicHeaders.shippedI;
+  if ($('wfSubJ')) $('wfSubJ').textContent = dynamicHeaders.shippedJ;
+  if ($('ltNote')) $('ltNote').textContent = dynamicHeaders.lt;
+}
+
+/* ---------------- payload <-> rows ---------------- */
+function payloadToRows(p) {
+  const rows = [{ B: '거래처명', C: '부서', D: '담당자' }];
+  (p.rows || []).forEach((r) => {
+    rows.push({ B: r[0], C: r[1], D: r[2], H: r[3], I: r[4], J: r[5], K: r[6], L: r[7], N: r[8], O: r[9], P: r[10], Q: r[11] });
+  });
+  return rows;
+}
+function processPayload(p) {
+  if (!p || !p.rows || !p.rows.length) { showLoadError('데이터 행이 없습니다. 엑셀 파일을 확인해 주세요.'); return; }
+  processData(payloadToRows(p));
+}
+
+/* ---------------- excel import ---------------- */
+function cellText(ws, addr) {
+  const c = ws[addr];
+  if (!c) return '';
+  if (c.w !== undefined && c.w !== '') return String(c.w).trim();
+  return c.v != null ? String(c.v).trim() : '';
+}
+function cellDate(ws, addr) {
+  const c = ws[addr];
+  if (!c) return '';
+  const v = c.v;
+  if (typeof v === 'number' && v > 20000 && v < 90000) {
+    const d = new Date(Date.UTC(1899, 11, 30) + v * 86400000);
+    const p2 = (x) => String(x).padStart(2, '0');
+    let out = d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate());
+    if (Math.abs(v - Math.floor(v)) > 1e-6) out += ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes());
+    return out;
+  }
+  return cellText(ws, addr);
+}
+function payloadFromWorkbook(wb) {
+  const name = wb.SheetNames.find((s) => s.toLowerCase() === 'data') || wb.SheetNames[0];
+  const ws = wb.Sheets[name];
+  const jsonRows = XLSX.utils.sheet_to_json(ws, { header: 'A', defval: '' });
+  const rows = [];
+  let started = false;
+  for (let i = 0; i < jsonRows.length; i++) {
+    const r = jsonRows[i];
+    const b = String(r.B || '').trim();
+    if (!started) { if (b.includes('거래처')) { started = true; continue; } if (i > 7) started = true; else continue; }
+    if (!b) continue;
+    const joined = Object.values(r).join('');
+    if (joined.includes('총합계') || joined.includes('소계') || joined.includes('총계')) continue;
+    rows.push([b, String(r.C || '').trim(), String(r.D || '').trim(),
+      parseNum(r.H), parseNum(r.I), parseNum(r.J), parseNum(r.K), parseNum(r.L),
+      parseNum(r.N), parseNum(r.O), parseNum(r.P), parseNum(r.Q)]);
+  }
+  return {
+    v: 1,
+    baseDate: cellDate(ws, 'B3'),
+    updated: cellDate(ws, 'B4'),
+    headers: { shippedI: cellText(ws, 'I5'), shippedJ: cellText(ws, 'J5'), m0: cellText(ws, 'N5'), m1: cellText(ws, 'O5'), m2: cellText(ws, 'P5'), lt: cellText(ws, 'Q5') },
+    rows: rows
+  };
+}
+function handleExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      const payload = payloadFromWorkbook(wb);
+      if (!payload.rows.length) { toast('Data 시트에서 데이터를 찾지 못했습니다.'); return; }
+      currentPayload = payload;
+      applyMeta(payload);
+      processPayload(payload);
+      $('gate').hidden = true;
+      $('app').hidden = false;
+      toast('엑셀 데이터를 화면에 반영했습니다. (배포하려면 [관리 → 암호화 데이터 파일 생성])');
+    } catch (err) {
+      console.error(err);
+      toast('엑셀 처리 중 오류가 발생했습니다: ' + err.message);
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ---------------- core aggregation (기존 로직 유지) ---------------- */
+function resetClientPane() {
+  $('clientDetailTitle').textContent = '거래처 상세 현황 · 담당자를 선택하세요';
+  $('clientTableBody').innerHTML = '<tr><td colspan="9" class="empty">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
+}
+
+function processData(jsonRows) {
+  rawData = []; deptData = {}; managerData = {}; longTermClients = []; uncollectibleClients = [];
+  activeManagerName = null;
+  resetClientPane();
+
+  let dataStarted = false;
+  let lastDept = '미지정부서';
+  let lastManager = '미지정담당자';
+
+  for (let i = 0; i < jsonRows.length; i++) {
+    let row = jsonRows[i];
+    if (!row) continue;
+
+    let b = String(row.B || '').trim();
+    let c = String(row.C || '').trim();
+    let d = String(row.D || '').trim();
+
+    if (!dataStarted) {
+      if (b.includes('거래처') || b === '거래처명') { dataStarted = true; continue; }
+      if (i > 7) dataStarted = true;
+      continue;
+    }
+
+    const rowStr = Object.values(row).join('').replace(/\s+/g, '');
+    if (rowStr === '' || rowStr.includes('총합계') || rowStr.includes('합계') || rowStr.includes('총계') || rowStr.includes('소계') || rowStr.includes('#미등록')) continue;
+
+    if (c) lastDept = c; else c = lastDept;
+    if (d) lastManager = d; else d = lastManager;
+    if (!b) b = '미지정거래처';
+
+    let prev = parseNum(row.H);
+    let shipped_i = parseNum(row.I);
+    let shipped_j = parseNum(row.J);
+    let shipped = shipped_i + shipped_j;
+    let collected = parseNum(row.K);
+    let current = parseNum(row.L);
+
+    let month0 = parseNum(row.N);
+    let month1 = parseNum(row.O);
+    let month2 = parseNum(row.P);
+    let longterm = parseNum(row.Q);
+
+    if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0) continue;
+
+    const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm };
+
+    if (c === '회수 불능 채권' || c.replace(/\s+/g, '') === '회수불능채권') {
+      uncollectibleClients.push(record);
+      continue;
+    }
+
+    rawData.push(record);
+    if (longterm > 0) longTermClients.push(record);
+
+    if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0 };
+    deptData[c].prev += prev;
+    deptData[c].shipped += shipped;
+    deptData[c].shipped_i += shipped_i;
+    deptData[c].shipped_j += shipped_j;
+    deptData[c].collected += collected;
+    deptData[c].current += current;
+    deptData[c].month0 += month0;
+    deptData[c].month1 += month1;
+    deptData[c].month2 += month2;
+    deptData[c].longterm += longterm;
+
+    if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, clients: [] };
+    managerData[d].prev += prev;
+    managerData[d].shipped += shipped;
+    managerData[d].shipped_i += shipped_i;
+    managerData[d].shipped_j += shipped_j;
+    managerData[d].collected += collected;
+    managerData[d].current += current;
+    managerData[d].month0 += month0;
+    managerData[d].month1 += month1;
+    managerData[d].month2 += month2;
+    managerData[d].longterm += longterm;
+    managerData[d].clients.push(record);
+  }
+
+  if (rawData.length === 0 && uncollectibleClients.length === 0) {
+    showLoadError('집계 가능한 데이터가 없습니다. Data 시트의 열 구성을 확인해 주세요.');
+    return;
+  }
+  updateDashboardUI();
+}
+
+function showLoadError(msg) {
+  $('loadState').textContent = '데이터 오류';
+  $('deptTableBody').innerHTML = '<tr><td colspan="6" class="empty">' + esc(msg) + '</td></tr>';
+  toast(msg);
+}
+
+/* ---------------- dashboard ---------------- */
+function updateDashboardUI() {
+  let totalPrev = 0, totalShipped = 0, totalShippedI = 0, totalShippedJ = 0, totalCollected = 0, totalCurrent = 0, totalLongTerm = 0;
+  Object.values(deptData).forEach((d) => {
+    totalPrev += d.prev; totalShipped += d.shipped;
+    totalShippedI += d.shipped_i; totalShippedJ += d.shipped_j;
+    totalCollected += d.collected; totalCurrent += d.current; totalLongTerm += d.longterm;
+  });
+  const totalUncollectible = uncollectibleClients.reduce((s, c) => s + c.current, 0);
+
+  $('valPrev').textContent = formatMil(totalPrev);
+  $('valShippedI').textContent = formatMil(totalShippedI);
+  $('valShippedJ').textContent = formatMil(totalShippedJ);
+  $('valCollected').textContent = formatMil(totalCollected);
+  $('valCurrent').textContent = formatMil(totalCurrent);
+  $('valLongterm').textContent = formatKRW(totalLongTerm);
+  $('valUncollectible').textContent = formatKRW(totalUncollectible);
+
+  const delta = totalCurrent - totalPrev;
+  $('valDelta').textContent = (delta > 0 ? '+' : '') + formatKRW(delta) + '원';
+  $('valRate').textContent = totalPrev > 0 ? ((totalCollected / totalPrev) * 100).toFixed(1) + '%' : '–';
+  $('valClients').textContent = formatKRW(rawData.length) + '곳';
+
+  renderDeptTable();
+  renderDeptProgress();
+  renderManagerTable();
+  renderLongTermTable();
+  renderUncollectibleTable();
+  renderWaterfall(totalPrev, totalShippedI, totalShippedJ, totalCollected, totalCurrent);
+}
+
+function renderDeptTable() {
+  const tbody = $('deptTableBody');
+  tbody.innerHTML = '';
+  const entries = Object.entries(deptData).sort((a, b) => b[1].current - a[1].current);
+  let tPrev = 0, tShip = 0, tCol = 0, tCur = 0, tLt = 0;
+
+  entries.forEach(([dept, d]) => {
+    tPrev += d.prev; tShip += d.shipped; tCol += d.collected; tCur += d.current; tLt += d.longterm;
+    const tr = document.createElement('tr');
+    tr.className = 'clickable';
+    tr.onclick = () => openDeptModal(dept);
+    tr.innerHTML =
+      '<td class="b">' + esc(dept) + '</td>' +
+      '<td class="r num">' + formatKRW(d.prev) + '</td>' +
+      '<td class="r num">' + formatKRW(d.shipped) + '</td>' +
+      '<td class="r num">' + formatKRW(d.collected) + '</td>' +
+      '<td class="r num b">' + formatKRW(d.current) + '</td>' +
+      '<td class="r num ' + (d.longterm > 0 ? 'red b' : 'dim') + '">' + formatKRW(d.longterm) + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  const tr = document.createElement('tr');
+  tr.className = 'total';
+  tr.innerHTML =
+    '<td>합계</td>' +
+    '<td class="r num">' + formatKRW(tPrev) + '</td>' +
+    '<td class="r num">' + formatKRW(tShip) + '</td>' +
+    '<td class="r num">' + formatKRW(tCol) + '</td>' +
+    '<td class="r num">' + formatKRW(tCur) + '</td>' +
+    '<td class="r num ' + (tLt > 0 ? 'red' : 'dim') + '">' + formatKRW(tLt) + '</td>';
+  tbody.appendChild(tr);
+}
+
+function renderDeptProgress() {
+  const el = $('deptProgress');
+  el.innerHTML = '';
+  const entries = Object.entries(deptData).sort((a, b) => b[1].current - a[1].current);
+  entries.forEach(([dept, d]) => {
+    const rate = d.prev > 0 ? (d.collected / d.prev) * 100 : 0;
+    const w = Math.max(0, Math.min(100, rate));
+    const row = document.createElement('div');
+    row.className = 'prog-row';
+    row.innerHTML =
+      '<div class="prog-name" title="' + esc(dept) + '">' + esc(dept) + '</div>' +
+      '<div class="prog-track"><div class="prog-fill' + (rate < 40 ? ' low' : '') + '" style="width:' + w.toFixed(1) + '%"></div></div>' +
+      '<div class="prog-val num">' + rate.toFixed(1) + '%<span>' + formatMil(d.collected) + ' / ' + formatMil(d.prev) + '</span></div>';
+    el.appendChild(row);
+  });
+}
+
+function renderWaterfall(tPrev, tI, tJ, tCol, tCur) {
+  const steps = [
+    { from: 0, to: tPrev, type: 'base' },
+    { from: tPrev, to: tPrev + tI, type: 'plus' },
+    { from: tPrev + tI, to: tPrev + tI + tJ, type: 'plus' },
+    { from: tCur, to: tCur + tCol, type: 'minus' },
+    { from: 0, to: tCur, type: 'total' }
+  ];
+  const max = Math.max(tPrev + tI + tJ, tCur, 1) * 1.12;
+  const pct = (v) => Math.max(0, Math.min(100, (v / max) * 100));
+  const cols = document.querySelectorAll('#wf .wf-col');
+
+  steps.forEach((s, i) => {
+    const track = cols[i].querySelector('.wf-track');
+    track.innerHTML = '';
+    const bar = document.createElement('div');
+    const cls = s.type === 'base' ? 'b-base' : s.type === 'plus' ? 'b-plus' : s.type === 'minus' ? 'b-minus' : 'b-total';
+    bar.className = 'wf-bar ' + cls;
+    bar.style.bottom = pct(Math.min(s.from, s.to)).toFixed(2) + '%';
+    bar.style.height = Math.max(pct(Math.abs(s.to - s.from)), 1).toFixed(2) + '%';
+    track.appendChild(bar);
+
+    if (i < steps.length - 1) {
+      const con = document.createElement('div');
+      con.className = 'wf-con';
+      con.style.bottom = pct(s.to).toFixed(2) + '%';
+      track.appendChild(con);
+    }
+    const v = document.createElement('div');
+    v.className = 'wf-v num';
+    v.style.bottom = 'calc(' + pct(Math.max(s.from, s.to)).toFixed(2) + '% + 5px)';
+    v.textContent = (s.type === 'minus' ? '−' : '') + formatMil(Math.abs(s.to - s.from));
+    track.appendChild(v);
+  });
+
+  const delta = tCur - tPrev;
+  $('wfDelta').textContent = (delta > 0 ? '+' : '') + formatKRW(delta) + '원';
+  $('wfNote').textContent = '막대 높이는 전체 금액 대비 비율입니다. 단위: 백만원';
+}
+
+/* ---------------- modal helpers ---------------- */
+function openModal() { renderLongTermTable(); $('longTermModal').classList.add('on'); }
+function closeModal() { $('longTermModal').classList.remove('on'); }
+function openUncollectibleModal() { renderUncollectibleTable(); $('uncollectibleModal').classList.add('on'); }
+function closeUncollectibleModal() { $('uncollectibleModal').classList.remove('on'); }
+function closeSearchModal() { $('searchModal').classList.remove('on'); }
+function closeDeptModal() { $('deptModal').classList.remove('on'); }
+
+/* 모든 모달: 배경 클릭 / ESC 닫기 */
+document.addEventListener('click', (e) => {
+  if (e.target.classList && e.target.classList.contains('modal')) {
+    document.querySelectorAll('.modal.on').forEach((m) => m.classList.remove('on'));
+  }
+  const tip = e.target.closest ? e.target.closest('.info') : null;
+  document.querySelectorAll('.tip.on').forEach((t) => { if (!tip || t !== tip.parentElement.querySelector('.tip')) t.classList.remove('on'); });
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.on').forEach((m) => m.classList.remove('on'));
+    document.querySelectorAll('.tip.on').forEach((t) => t.classList.remove('on'));
+    $('menuList').classList.remove('on');
+  }
+  if (e.key === '/' && document.activeElement !== $('clientSearchInput')) { e.preventDefault(); $('clientSearchInput').focus(); }
+});
+function toggleTip(ev) {
+  ev.stopPropagation();
+  const card = ev.target.closest ? ev.target.closest('.kpi') : null;
+  const tip = card ? card.querySelector('.tip') : null;
+  if (!tip) return;
+  const wasOn = tip.classList.contains('on');
+  document.querySelectorAll('.tip.on').forEach((t) => t.classList.remove('on'));
+  if (!wasOn) tip.classList.add('on');
+}
+
+/* ---------------- sort icons ---------------- */
+function paintIcons(prefixes, activeCol, asc, names) {
+  names.forEach((n) => {
+    prefixes.forEach((p) => {
+      const el = $('sortIcon' + p + '_' + n);
+      if (!el) return;
+      const on = activeCol === n;
+      el.textContent = on ? (asc ? '▲' : '▼') : '▲▼';
+      el.className = 'sort-i' + (on ? ' on' : '');
+    });
+  });
+}
+
+/* ---------------- long-term ---------------- */
+function sortLongTermTable(col) {
+  if (longTermSortColumn === col) longTermSortAsc = !longTermSortAsc;
+  else { longTermSortColumn = col; longTermSortAsc = (col === 'client' || col === 'manager' || col === 'dept'); }
+  renderLongTermTable();
+}
+function renderLongTermTable() {
+  const tb = $('longTermTableBody');
+  if (!tb) return;
+  const sorted = [...longTermClients].sort((a, b) => {
+    const va = a[longTermSortColumn], vb = b[longTermSortColumn];
+    if (typeof va === 'string') return longTermSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return longTermSortAsc ? va - vb : vb - va;
+  });
+  tb.innerHTML = sorted.map((c) =>
+    '<tr>' +
+    '<td class="dim">' + esc(c.dept) + '</td>' +
+    '<td class="b">' + esc(c.manager) + '</td>' +
+    '<td class="b">' + esc(c.client) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.prev) + '</td>' +
+    '<td class="r num b">' + formatKRW(c.current) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month0) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month1) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month2) + '</td>' +
+    '<td class="r num red b">' + formatKRW(c.longterm) + '</td>' +
+    '</tr>'
+  ).join('');
+  if (!sorted.length) tb.innerHTML = '<tr><td colspan="9" class="empty">장기 미매출 처리된 거래처가 없습니다.</td></tr>';
+  paintIcons(['LT'], longTermSortColumn, longTermSortAsc, ['dept', 'manager', 'client', 'prev', 'current', 'month0', 'month1', 'month2', 'longterm']);
+}
+
+/* ---------------- uncollectible ---------------- */
+function sortUncollectibleTable(col) {
+  if (uncollectibleSortColumn === col) uncollectibleSortAsc = !uncollectibleSortAsc;
+  else { uncollectibleSortColumn = col; uncollectibleSortAsc = (col === 'client' || col === 'manager' || col === 'dept'); }
+  renderUncollectibleTable();
+}
+function renderUncollectibleTable() {
+  const tb = $('uncollectibleTableBody');
+  if (!tb) return;
+  const sorted = [...uncollectibleClients].sort((a, b) => {
+    const va = a[uncollectibleSortColumn], vb = b[uncollectibleSortColumn];
+    if (typeof va === 'string') return uncollectibleSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return uncollectibleSortAsc ? va - vb : vb - va;
+  });
+  tb.innerHTML = sorted.map((c) =>
+    '<tr>' +
+    '<td class="dim">' + esc(c.dept) + '</td>' +
+    '<td class="b">' + esc(c.manager) + '</td>' +
+    '<td class="b">' + esc(c.client) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.prev) + '</td>' +
+    '<td class="r num b">' + formatKRW(c.current) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month0) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month1) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month2) + '</td>' +
+    '<td class="r num muted b">' + formatKRW(c.longterm) + '</td>' +
+    '</tr>'
+  ).join('');
+  if (!sorted.length) tb.innerHTML = '<tr><td colspan="9" class="empty">등록된 회수 불능 채권 거래처가 없습니다.</td></tr>';
+  paintIcons(['UC'], uncollectibleSortColumn, uncollectibleSortAsc, ['dept', 'manager', 'client', 'prev', 'current', 'month0', 'month1', 'month2', 'longterm']);
+}
+
+/* ---------------- dept detail ---------------- */
+function openDeptModal(deptName) {
+  activeDeptName = deptName;
+  $('deptModalTitle').textContent = '[' + deptName + '] 상세 거래처 명단 · 원 단위';
+  renderDeptDetails();
+  $('deptModal').classList.add('on');
+}
+function renderDeptDetails() {
+  const tb = $('deptDetailTableBody');
+  const filtered = rawData.filter((r) => r.dept === activeDeptName).sort((a, b) => {
+    const va = a[deptSortColumn], vb = b[deptSortColumn];
+    if (typeof va === 'string') return deptSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return deptSortAsc ? va - vb : vb - va;
+  });
+  tb.innerHTML = filtered.map((c) =>
+    '<tr>' +
+    '<td class="dim">' + esc(c.dept) + '</td>' +
+    '<td class="b">' + esc(c.manager) + '</td>' +
+    '<td class="b">' + esc(c.client) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.prev) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.shipped) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.collected) + '</td>' +
+    '<td class="r num b">' + formatKRW(c.current) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month0) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month1) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month2) + '</td>' +
+    '<td class="r num ' + (c.longterm > 0 ? 'red b' : 'dim') + '">' + formatKRW(c.longterm) + '</td>' +
+    '</tr>'
+  ).join('');
+  if (!filtered.length) tb.innerHTML = '<tr><td colspan="11" class="empty">해당 부서에 표시할 거래처가 없습니다.</td></tr>';
+  paintIcons(['Dept'], deptSortColumn, deptSortAsc, ['dept', 'manager', 'client', 'prev', 'shipped', 'collected', 'current', 'month0', 'month1', 'month2', 'longterm']);
+}
+function sortDeptDetailTable(col) {
+  if (deptSortColumn === col) deptSortAsc = !deptSortAsc;
+  else { deptSortColumn = col; deptSortAsc = (col === 'client' || col === 'manager' || col === 'dept'); }
+  renderDeptDetails();
+}
+
+/* ---------------- manager ---------------- */
+function renderManagerTable() {
+  const tb = $('managerTableBody');
+  const entries = Object.entries(managerData);
+  entries.sort((a, b) => {
+    let va, vb;
+    if (managerSortColumn === 'manager') { va = a[1].dept + a[0]; vb = b[1].dept + b[0]; }
+    else { va = a[1][managerSortColumn]; vb = b[1][managerSortColumn]; }
+    if (typeof va === 'string') return managerSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return managerSortAsc ? va - vb : vb - va;
+  });
+  tb.innerHTML = '';
+  entries.forEach(([manager, data]) => {
+    const tr = document.createElement('tr');
+    tr.className = 'clickable';
+    if (manager === activeManagerName) tr.classList.add('active');
+    tr.onclick = () => renderClientDetails(manager, tr);
+    tr.innerHTML =
+      '<td class="b">' + esc(manager) + '<span class="dim" style="font-weight:500;font-size:11px"> · ' + esc(data.dept) + '</span></td>' +
+      '<td class="r num dim">' + formatKRW(data.prev) + '</td>' +
+      '<td class="r num dim">' + formatKRW(data.shipped) + '</td>' +
+      '<td class="r num">' + formatKRW(data.collected) + '</td>' +
+      '<td class="r num b">' + formatKRW(data.current) + '</td>' +
+      '<td class="r num ' + (data.longterm > 0 ? 'red b' : 'dim') + '">' + formatKRW(data.longterm) + '</td>';
+    tb.appendChild(tr);
+  });
+  paintIcons(['Mgr'], managerSortColumn, managerSortAsc, ['manager', 'prev', 'shipped', 'collected', 'current', 'longterm']);
+}
+function sortManagerTable(col) {
+  if (managerSortColumn === col) managerSortAsc = !managerSortAsc;
+  else { managerSortColumn = col; managerSortAsc = (col === 'manager'); }
+  renderManagerTable();
+}
+
+/* ---------------- client detail ---------------- */
+function renderClientDetails(managerName, rowElement) {
+  if (managerName) activeManagerName = managerName;
+  if (rowElement) {
+    $('managerTableBody').querySelectorAll('tr').forEach((el) => el.classList.remove('active'));
+    rowElement.classList.add('active');
+  }
+  const mData = managerData[activeManagerName];
+  if (!mData) return;
+
+  $('clientDetailTitle').textContent = '[' + activeManagerName + '] 거래처 상세 현황 · ' + mData.dept;
+  const sorted = [...mData.clients].sort((a, b) => {
+    const va = a[clientSortColumn], vb = b[clientSortColumn];
+    if (typeof va === 'string') return clientSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return clientSortAsc ? va - vb : vb - va;
+  });
+  $('clientTableBody').innerHTML = sorted.map((c) =>
+    '<tr>' +
+    '<td class="b">' + esc(c.client) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.prev) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.shipped) + '</td>' +
+    '<td class="r num">' + formatKRW(c.collected) + '</td>' +
+    '<td class="r num b">' + formatKRW(c.current) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month0) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month1) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.month2) + '</td>' +
+    '<td class="r num ' + (c.longterm > 0 ? 'red b' : 'dim') + '">' + formatKRW(c.longterm) + '</td>' +
+    '</tr>'
+  ).join('');
+  paintIcons([''], clientSortColumn, clientSortAsc, ['client', 'prev', 'shipped', 'collected', 'current', 'month0', 'month1', 'month2', 'longterm']);
+}
+function sortClientTable(col) {
+  if (clientSortColumn === col) clientSortAsc = !clientSortAsc;
+  else { clientSortColumn = col; clientSortAsc = (col === 'client'); }
+  if (activeManagerName) renderClientDetails(null, null);
+}
+
+/* ---------------- search ---------------- */
+function handleSearch(ev) { if (ev.key === 'Enter') searchClient(); }
+function searchClient() {
+  const q = $('clientSearchInput').value.trim().toLowerCase();
+  if (!q) { toast('검색할 거래처명을 입력해 주세요.'); return; }
+  const results = rawData.filter((r) => r.client.toLowerCase().includes(q));
+  const box = $('searchResultContent');
+  if (!results.length) {
+    box.innerHTML = '<div class="empty">"' + esc(q) + '" 에 대한 검색 결과가 없습니다.</div>';
+  } else {
+    box.innerHTML = '<div class="pad sec-sub">검색 결과 ' + results.length + '건</div>' +
+      '<div class="tw"><table class="tbl wide"><thead><tr>' +
+      '<th>거래처명</th><th>부서</th><th>담당자</th>' +
+      '<th class="r">전월미수</th><th class="r">출고처리</th><th class="r">당월수금</th><th class="r">현잔액</th><th class="r"><span class="dyn-lt">장기미수</span></th>' +
+      '</tr></thead><tbody>' +
+      results.map((r) =>
+        '<tr><td class="b">' + esc(r.client) + '</td>' +
+        '<td class="dim">' + esc(r.dept) + '</td>' +
+        '<td class="muted">' + esc(r.manager) + '</td>' +
+        '<td class="r num dim">' + formatKRW(r.prev) + '</td>' +
+        '<td class="r num dim">' + formatKRW(r.shipped) + '</td>' +
+        '<td class="r num">' + formatKRW(r.collected) + '</td>' +
+        '<td class="r num b">' + formatKRW(r.current) + '</td>' +
+        '<td class="r num ' + (r.longterm > 0 ? 'red b' : 'dim') + '">' + formatKRW(r.longterm) + '</td></tr>'
+      ).join('') +
+      '</tbody></table></div>';
+    updateDynamicHeaders();
+  }
+  $('searchModal').classList.add('on');
+}
+
+/* ---------------- admin menu ---------------- */
+function toggleMenu(ev) { ev.stopPropagation(); $('menuList').classList.toggle('on'); }
+document.addEventListener('click', (e) => {
+  if (!e.target.closest || !e.target.closest('.menu')) $('menuList').classList.remove('on');
+});
+
+function downloadBlob(content, filename, type) {
+  const blob = new Blob([content], { type: type || 'application/octet-stream' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
+async function exportEncrypted() {
+  $('menuList').classList.remove('on');
+  if (!currentPayload) { toast('데이터가 없습니다. 먼저 엑셀을 업로드해 주세요.'); return; }
+  if (!currentPassword) {
+    const pw = window.prompt('이 데이터를 잠글 비밀번호를 입력하세요.\n(같은 비밀번호를 대시보드 로그인에 사용합니다)');
+    if (!pw) return;
+    currentPassword = pw;
+  }
+  try {
+    const env = await encryptPayload(currentPayload, currentPassword);
+    downloadBlob(JSON.stringify(env), 'data.enc', 'application/json');
+    toast('data.enc 를 내려받았습니다. index.html 과 같은 위치에 올려주세요.');
+  } catch (e) { toast('암호화 실패: ' + e.message); }
+}
+
+async function changePassword() {
+  $('menuList').classList.remove('on');
+  if (!currentPayload) { toast('데이터가 없습니다.'); return; }
+  const pw1 = window.prompt('새 비밀번호를 입력하세요. (4자 이상)');
+  if (!pw1) return;
+  if (pw1.length < 4) { toast('비밀번호는 4자 이상이어야 합니다.'); return; }
+  const pw2 = window.prompt('새 비밀번호를 한 번 더 입력하세요.');
+  if (pw1 !== pw2) { toast('두 비밀번호가 일치하지 않습니다.'); return; }
+  try {
+    const env = await encryptPayload(currentPayload, pw1);
+    currentPassword = pw1;
+    try { sessionStorage.setItem(KEY_PW, pw1); } catch (e) {}
+    downloadBlob(JSON.stringify(env), 'data.enc', 'application/json');
+    toast('비밀번호를 변경했습니다. 내려받은 data.enc 를 반드시 배포해야 적용됩니다.');
+  } catch (e) { toast('변경 실패: ' + e.message); }
+}
+
+function downloadCurrentJson() {
+  $('menuList').classList.remove('on');
+  if (!rawData.length) { toast('내보낼 데이터가 없습니다.'); return; }
+  const head = ['거래처명', '부서', '담당자', '전월미수', '출고처리', '당월수금', '현잔액', '당월발생', '1개월전', '2개월전', '장기미수'];
+  const lines = [head.join(',')].concat(rawData.map((r) =>
+    [r.client, r.dept, r.manager, r.prev, r.shipped, r.collected, r.current, r.month0, r.month1, r.month2, r.longterm]
+      .map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(',')
+  ));
+  downloadBlob('\ufeff' + lines.join('\r\n'), '채권현황_' + (currentPayload && currentPayload.baseDate ? currentPayload.baseDate : 'export') + '.csv', 'text/csv;charset=utf-8');
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('on'), 3600);
+}
+
+/* ---------------- boot ---------------- */
+$('gateForm').addEventListener('submit', doUnlock);
+$('pw').addEventListener('input', () => {
+  const kw = koreanModeWarning($('pw').value);
+  if (kw) setGateMsg(kw, 'warn');
+  else if ($('gateMsg').className.indexOf('warn') > -1) setGateMsg('', '');
+});
+document.addEventListener('DOMContentLoaded', () => {
+  updateDynamicHeaders();
+  boot();
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
