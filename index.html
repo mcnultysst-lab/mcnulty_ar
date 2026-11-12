@@ -26,6 +26,10 @@
   --red-2:#B42318;
   --red-soft:#FEF3F2;
   --red-line:#F5B5AE;
+  --blue:#1D4ED8;
+  --blue-2:#1E3A8A;
+  --blue-soft:#EFF6FF;
+  --blue-line:#B6CDFA;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -120,14 +124,14 @@ body{
 
 /* ---------- hero ---------- */
 .hero{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:14px;margin-top:18px}
-.kpi-main{background:var(--ink);color:#fff;padding:26px 26px 22px;display:flex;flex-direction:column;justify-content:space-between;min-height:196px}
+.kpi-main{background:var(--ink);color:#fff;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:space-between}
 .kpi-main .k-lb{font-size:12px;font-weight:600;color:#B5B5B5;letter-spacing:.05em}
-.kpi-main .k-v{font-size:clamp(38px,6.2vw,62px);font-weight:900;letter-spacing:-.035em;line-height:1;margin-top:12px}
+.kpi-main .k-v{font-size:clamp(32px,3.6vw,44px);font-weight:900;letter-spacing:-.035em;line-height:1;margin:auto 0;padding-top:6px}
 .kpi-main .k-u{font-size:13px;font-weight:600;color:#B5B5B5;margin-left:7px;letter-spacing:0}
-.kpi-main .k-foot{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);display:flex;gap:18px;flex-wrap:wrap;align-items:baseline}
+.kpi-main .k-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
 .kpi-main .k-foot .f{font-size:11.5px;color:#A8A8A8}
 .kpi-main .k-foot .f b{display:block;font-size:14px;color:#fff;font-weight:800;margin-top:3px}
-.risk-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
+.risk-stack{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:14px}
 .risk{background:#fff;border:1px solid var(--line);padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:border-color .15s,background .15s}
 .risk:hover{border-color:var(--red);background:var(--red-soft)}
 .risk.static{cursor:default}
@@ -148,12 +152,12 @@ body{
 .kpi-v .u{font-size:11.5px;font-weight:600;color:var(--ink-4);margin-left:5px;letter-spacing:0}
 .kpi.pos .kpi-v{color:var(--ink)}
 .kpi.neg .kpi-v{color:var(--red)}
-.info{
+.kpi .info{
   flex:0 0 auto;width:15px;height:15px;border:1px solid var(--line-2);color:var(--ink-4);border-radius:50%;
   font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
   font-style:normal;line-height:1;margin-top:1px;user-select:none;
 }
-.info:hover{border-color:var(--ink);color:var(--ink)}
+.kpi .info:hover{border-color:var(--ink);color:var(--ink)}
 .tip{
   position:absolute;left:14px;right:14px;bottom:calc(100% - 6px);background:var(--ink);color:#E9E9E9;
   font-size:11.5px;line-height:1.6;padding:11px 13px;z-index:30;display:none;box-shadow:0 8px 24px rgba(0,0,0,.22);
@@ -230,6 +234,21 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 .cb-sub{font-size:12px;color:var(--ink-2)}
 .cb-sub b{color:var(--red-2)}
 .cb-go{font-size:12px;font-weight:700;color:var(--red);white-space:nowrap}
+
+/* 파란색 강조 계열 — 60일 이상 미확정 출고 / 주의 파생 카드 */
+.risk.blue{border-color:var(--blue-line)}
+.risk.blue:hover{border-color:var(--blue);background:var(--blue-soft)}
+.risk.blue .risk-v{color:var(--blue)}
+.risk.blue .risk-lb{color:var(--blue-2)}
+.risk.blue .risk-go{color:var(--blue)}
+.chip.blue{border-color:var(--blue-line);color:var(--blue);background:var(--blue-soft)}
+.modal-h.info h3::before{background:var(--blue)}
+.confirm-banner{background:var(--blue-soft);border:1px solid var(--blue-line);border-left:4px solid var(--blue)}
+.confirm-banner .cb-ico{background:var(--blue)}
+.confirm-banner .cb-t{color:var(--blue-2)}
+.confirm-banner .cb-sub b{color:var(--blue-2)}
+.confirm-banner:hover{background:#E3EEFE}
+.confirm-banner .cb-go{color:var(--blue)}
 .sort-i{font-size:9px;color:#C4C4C4;margin-left:3px}
 .sort-i.on{color:var(--ink)}
 .legend{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--ink-3);flex-wrap:wrap}
@@ -240,8 +259,8 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 .modal.on{display:flex}
 .modal-box{background:#fff;width:100%;max-width:1400px;max-height:86vh;display:flex;flex-direction:column;border:1px solid var(--ink)}
 .modal-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fff}
-.modal-h h3{margin:0;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
-.modal-h h3::before{content:"";width:9px;height:9px;background:var(--ink);display:block;flex:0 0 auto}
+.modal-h h3{margin:0;font-size:14.5px;font-weight:800;letter-spacing:-.01em;position:relative;padding-left:19px;line-height:1.45}
+.modal-h h3::before{content:"";width:9px;height:9px;background:var(--ink);display:block;position:absolute;left:0;top:7px}
 .modal-h.danger h3::before{background:var(--red)}
 .x{border:0;background:none;font-size:20px;line-height:1;color:var(--ink-3);cursor:pointer;padding:2px 4px;font-family:inherit}
 .x:hover{color:var(--ink)}
@@ -401,7 +420,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
               <span class="dyn-lt">장기미수</span>
             </div>
             <div class="risk-v num"><span id="valLongterm">0</span><span class="u">원</span></div>
-            <div class="risk-note" id="ltNote">30일 이상 장기 미매출 잔액</div>
+            <div class="risk-note" id="ltNote">60일 이상 장기 미매출 잔액</div>
           </div>
           <div class="risk-go">거래처 명단 보기 →</div>
         </div>
@@ -419,8 +438,16 @@ table.tbl tbody tr.total td:first-child{background:#fff}
       </div>
     </section>
 
-    <!-- ---------- 주의 배너 (S열 "주의" 거래처) ---------- -->
-    <section class="caution-banner" id="cautionBanner" hidden onclick="openCautionModal()" role="button">
+    <!-- ---------- 상단 강조 배너 : 주의(적색) / 60일 이상 미확정 출고(청색) ---------- -->
+    <section class="caution-banner confirm-banner" id="unshippedBanner" hidden onclick="openUnshippedModal()" role="button" style="margin-top:18px">
+      <div class="cb-l">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue-2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.8"/></svg>
+        <span class="cb-t">60일 이상 미확정 출고 <span id="unshippedCount" class="num">0</span>곳</span>
+        <span class="cb-sub">출고 후 매출 미확정 <b id="unshippedAmt" class="num">0</b> · 영업담당자 확인 또는 기안 조정 필요</span>
+      </div>
+      <span class="cb-go">명단 보기 →</span>
+    </section>
+    <section class="caution-banner" id="cautionBanner" hidden onclick="openCautionModal()" role="button" style="margin-top:8px">
       <div class="cb-l">
         <i class="cb-ico">!</i>
         <span class="cb-t">주의 거래처 <span id="cautionCount" class="num">0</span>곳</span>
@@ -658,6 +685,42 @@ table.tbl tbody tr.total td:first-child{background:#fff}
   </div>
 </div>
 
+<div class="modal" id="unshippedModal">
+  <div class="modal-box">
+    <div class="modal-h info">
+      <h3>60일 이상 미확정 출고 거래처 명단 · 원 단위</h3>
+      <button class="x" onclick="closeUnshippedModal()">&times;</button>
+    </div>
+    <div class="modal-b">
+      <div class="pad">
+        <div class="ask-desc">
+          출고 처리만 된 지 <b>60일 이상</b> 경과했으나 <b>매출로 확정되지 않은</b> 금액입니다.<br>
+          영업담당자는 <b>거래처 확인</b> 후 매출 확정 또는 기안 조정을 진행하고, 예외 상황은 <b>사전 보고</b> 후 요청해 주세요.
+          <span class="dim" style="display:block;margin-top:6px">* 엑셀 M열 "60일 이상 장기 미매출잔액" &gt; 0 기준 · [미확정 명단 CSV] 로 내려 기안서에 첨부할 수 있습니다.</span>
+        </div>
+      </div>
+      <div class="tw scroll-y">
+        <table class="tbl wide">
+          <thead><tr>
+            <th class="s" onclick="sortUnshippedTable('dept')">부서 <i class="sort-i" id="sortIconUNS_dept">▲▼</i></th>
+            <th class="s" onclick="sortUnshippedTable('manager')">담당자 <i class="sort-i" id="sortIconUNS_manager">▲▼</i></th>
+            <th class="s" onclick="sortUnshippedTable('client')">거래처명 <i class="sort-i" id="sortIconUNS_client">▲▼</i></th>
+            <th class="s r" onclick="sortUnshippedTable('shipped')">출고처리 <i class="sort-i" id="sortIconUNS_shipped">▲▼</i></th>
+            <th class="s r" onclick="sortUnshippedTable('collected')">당월수금 <i class="sort-i" id="sortIconUNS_collected">▲▼</i></th>
+            <th class="s r" onclick="sortUnshippedTable('unshipped')">미확정 출고 <i class="sort-i" id="sortIconUNS_unshipped">▲▼</i></th>
+            <th class="s r" onclick="sortUnshippedTable('current')">현잔액 <i class="sort-i" id="sortIconUNS_current">▲▼</i></th>
+          </tr></thead>
+          <tbody id="unshippedTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn ghost" onclick="unshippedCsv()">미확정 명단 CSV</button>
+      <button class="btn ghost" onclick="closeUnshippedModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="cautionModal">
   <div class="modal-box">
     <div class="modal-h danger">
@@ -752,7 +815,9 @@ const formatKRW = (n) => new Intl.NumberFormat('ko-KR').format(Math.round(n || 0
 const formatMil = (n) => new Intl.NumberFormat('ko-KR').format(Math.round((n || 0) / 1000000));
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 /* 거래처명 셀 — S열 "주의" 표기가 있으면 적색 칩을 붙여 표시 */
-const clientCell = (c) => esc(c.client) + (c.caution ? ' <span class="chip red">주의</span>' : '');
+const clientCell = (c) => esc(c.client)
+  + (c.caution ? ' <span class="chip red">주의</span>' : '')
+  + (c.unshipped ? ' <span class="chip blue">미확정</span>' : '');
 
 const parseNum = (val) => {
   if (typeof val === 'number') return isFinite(val) ? val : 0;
@@ -779,6 +844,7 @@ let longTermSortColumn = 'longterm';let longTermSortAsc = false;
 let uncollectibleSortColumn = 'current'; let uncollectibleSortAsc = false;
 
 let cautionClients = [];                 // S열 "주의" 표기 거래처
+let unshippedClients = [];               // M열 > 0 : 60일 이상 출고 후 매출 미확정 거래처
 let cautionSortColumn = 'current';  let cautionSortAsc = false;
 
 let dynamicHeaders = {
@@ -796,6 +862,7 @@ let currentPassword = null;    // 잠금 해제에 사용한 비밀번호(세션
    ■  ADMIN = '비밀번호 변경' 을 허용하는 관리자 비밀번호  (관리자 본인만 알고 있음)
    ■  평문 비밀번호는 이 파일에 저장되지 않습니다. (PBKDF2 단방향 해시만 기록)
    ■  교체 방법: 대시보드 로그인 → 관리 → 비밀번호 변경 (관리자 인증 필요)
+   ■  M열 = 60일 이상 출고 후 미확정(매출 미확정) 금액 → 대시보드 '미확정 출고' 지표
    ========================================================================== */
 const AUTH  = { salt: "1qxi4YQ0eazy3umZgNjzfQ==", iter: 210000, hash: "NOCpyudFjduSF0lp0dUj+et/vSOf6ldKDQXSP0FdRTU=" };
 const ADMIN = { salt: "OoZtMPXmE/FW1mNazRNRTw==", iter: 210000, hash: "t3bt/ouryTXDS/RRkt+erVhJoCgeNNtWnrfciU6RIRY=" };
@@ -1001,7 +1068,7 @@ function updateDynamicHeaders() {
 function payloadToRows(p) {
   const rows = [{ B: '거래처명', C: '부서', D: '담당자' }];
   (p.rows || []).forEach((r) => {
-    rows.push({ B: r[0], C: r[1], D: r[2], H: r[3], I: r[4], J: r[5], K: r[6], L: r[7], N: r[8], O: r[9], P: r[10], Q: r[11], S: r[12] || '' });
+    rows.push({ B: r[0], C: r[1], D: r[2], H: r[3], I: r[4], J: r[5], K: r[6], L: r[7], M: r[8] || 0, N: r[9], O: r[10], P: r[11], Q: r[12], S: r[13] || '' });
   });
   return rows;
 }
@@ -1045,7 +1112,7 @@ function payloadFromWorkbook(wb) {
     if (joined.includes('총합계') || joined.includes('소계') || joined.includes('총계')) continue;
     rows.push([b, String(r.C || '').trim(), String(r.D || '').trim(),
       parseNum(r.H), parseNum(r.I), parseNum(r.J), parseNum(r.K), parseNum(r.L),
-      parseNum(r.N), parseNum(r.O), parseNum(r.P), parseNum(r.Q),
+      parseNum(r.M), parseNum(r.N), parseNum(r.O), parseNum(r.P), parseNum(r.Q),
       String(r.S || '').trim()]);
   }
   return {
@@ -1089,7 +1156,7 @@ function resetClientPane() {
 }
 
 function processData(jsonRows) {
-  rawData = []; deptData = {}; managerData = {}; longTermClients = []; uncollectibleClients = []; cautionClients = [];
+  rawData = []; deptData = {}; managerData = {}; longTermClients = []; uncollectibleClients = []; cautionClients = []; unshippedClients = [];
   activeManagerName = null;
   resetClientPane();
 
@@ -1129,11 +1196,12 @@ function processData(jsonRows) {
     let month1 = parseNum(row.O);
     let month2 = parseNum(row.P);
     let longterm = parseNum(row.Q);
+    let unshipped = parseNum(row.M);   // M열: 60일 이상 출고 후 매출 미확정 금액
     let caution = /주의/.test(String(row.S == null ? '' : row.S));
 
-    if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0) continue;
+    if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0 && unshipped === 0) continue;
 
-    const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm, caution };
+    const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm, unshipped, caution };
     if (record.caution && c !== '회수 불능 채권' && c.replace(/\s+/g, '') !== '회수불능채권') cautionClients.push(record);
 
     if (c === '회수 불능 채권' || c.replace(/\s+/g, '') === '회수불능채권') {
@@ -1143,8 +1211,9 @@ function processData(jsonRows) {
 
     rawData.push(record);
     if (longterm > 0) longTermClients.push(record);
+    if (unshipped > 0 && c !== '회수 불능 채권' && c.replace(/\s+/g, '') !== '회수불능채권') unshippedClients.push(record);   // 미확정 출고 대상 (M열 > 0, 회수불능 제외)
 
-    if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0 };
+    if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, unshipped: 0 };
     deptData[c].prev += prev;
     deptData[c].shipped += shipped;
     deptData[c].shipped_i += shipped_i;
@@ -1155,8 +1224,9 @@ function processData(jsonRows) {
     deptData[c].month1 += month1;
     deptData[c].month2 += month2;
     deptData[c].longterm += longterm;
+    deptData[c].unshipped += unshipped;
 
-    if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, clients: [] };
+    if (!managerData[d]) managerData[d] = { dept: c, prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, unshipped: 0, clients: [] };
     managerData[d].prev += prev;
     managerData[d].shipped += shipped;
     managerData[d].shipped_i += shipped_i;
@@ -1167,6 +1237,7 @@ function processData(jsonRows) {
     managerData[d].month1 += month1;
     managerData[d].month2 += month2;
     managerData[d].longterm += longterm;
+    managerData[d].unshipped += unshipped;
     managerData[d].clients.push(record);
   }
 
@@ -1192,6 +1263,8 @@ function updateDashboardUI() {
     totalCollected += d.collected; totalCurrent += d.current; totalLongTerm += d.longterm;
   });
   const totalUncollectible = uncollectibleClients.reduce((s, c) => s + c.current, 0);
+  /* 강조 대상 = M열 > 0 (확인·기안 조정이 필요한 건). 음수(매출확정이 출고를 초과)는 제외 */
+  const totalUnshipped = unshippedClients.reduce((s, c) => s + c.unshipped, 0);
 
   $('valPrev').textContent = formatMil(totalPrev);
   $('valShippedI').textContent = formatMil(totalShippedI);
@@ -1200,6 +1273,7 @@ function updateDashboardUI() {
   $('valCurrent').textContent = formatMil(totalCurrent);
   $('valLongterm').textContent = formatKRW(totalLongTerm);
   $('valUncollectible').textContent = formatKRW(totalUncollectible);
+  const unshippedEl = $('valUnshipped'); if (unshippedEl) unshippedEl.textContent = formatKRW(totalUnshipped);
 
   const delta = totalCurrent - totalPrev;
   $('valDelta').textContent = (delta > 0 ? '+' : '') + formatKRW(delta) + '원';
@@ -1212,6 +1286,8 @@ function updateDashboardUI() {
   renderLongTermTable();
   renderUncollectibleTable();
   renderCautionBanner();
+  renderUnshippedBanner();
+  renderUnshippedTable();
   renderWaterfall(totalPrev, totalShippedI, totalShippedJ, totalCollected, totalCurrent);
 }
 
@@ -1314,6 +1390,61 @@ function closeUncollectibleModal() { $('uncollectibleModal').classList.remove('o
 /* ================= 주의 거래처 (S열 "주의") ================= */
 function openCautionModal() { renderCautionTable(); $('cautionModal').classList.add('on'); }
 function closeCautionModal() { $('cautionModal').classList.remove('on'); }
+
+/* ============ 60일 이상 미확정 출고 (M열 > 0) ============ */
+function openUnshippedModal() { renderUnshippedTable(); $('unshippedModal').classList.add('on'); }
+function closeUnshippedModal() { $('unshippedModal').classList.remove('on'); }
+
+function renderUnshippedBanner() {
+  const b = $('unshippedBanner');
+  if (!b) return;
+  if (!unshippedClients.length) { b.hidden = true; return; }
+  const amt = unshippedClients.reduce((s, c) => s + c.unshipped, 0);
+  b.hidden = false;
+  $('unshippedCount').textContent = String(unshippedClients.length);
+  $('unshippedAmt').textContent = formatKRW(amt) + '원';
+}
+
+let unshippedSortColumn = 'unshipped'; let unshippedSortAsc = false;
+function sortUnshippedTable(col) {
+  if (unshippedSortColumn === col) unshippedSortAsc = !unshippedSortAsc;
+  else { unshippedSortColumn = col; unshippedSortAsc = (col === 'client' || col === 'manager' || col === 'dept'); }
+  renderUnshippedTable();
+}
+function renderUnshippedTable() {
+  const tb = $('unshippedTableBody');
+  if (!tb) return;
+  const sorted = [...unshippedClients].sort((a, b) => {
+    const va = a[unshippedSortColumn], vb = b[unshippedSortColumn];
+    if (typeof va === 'string') return unshippedSortAsc ? va.localeCompare(vb, 'ko') : vb.localeCompare(va, 'ko');
+    return unshippedSortAsc ? va - vb : vb - va;
+  });
+  tb.innerHTML = sorted.map((c) =>
+    '<tr>' +
+    '<td class="dim">' + esc(c.dept) + '</td>' +
+    '<td class="b">' + esc(c.manager) + '</td>' +
+    '<td class="b">' + clientCell(c) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.shipped) + '</td>' +
+    '<td class="r num dim">' + formatKRW(c.collected) + '</td>' +
+    '<td class="r num blue b" style="color:var(--blue)">' + formatKRW(c.unshipped) + '</td>' +
+    '<td class="r num b">' + formatKRW(c.current) + '</td>' +
+    '</tr>'
+  ).join('');
+  if (!sorted.length) tb.innerHTML = '<tr><td colspan="7" class="empty">60일 이상 미확정 출고 거래처가 없습니다.</td></tr>';
+  paintIcons(['UNS'], unshippedSortColumn, unshippedSortAsc, ['dept', 'manager', 'client', 'shipped', 'collected', 'unshipped', 'current']);
+}
+
+/* 기안서 첨부용 — 미확정 출고 거래처 명단만 CSV 로 저장 */
+function unshippedCsv() {
+  $('menuList').classList.remove('on');
+  if (!unshippedClients.length) { toast('60일 이상 미확정 출고 거래처가 없습니다.'); return; }
+  const head = ['거래처명', '부서', '담당자', '출고처리', '당월수금', '60일 이상 미확정 출고', '현잔액'];
+  const lines = [head.join(',')].concat(unshippedClients.map((c) =>
+    [c.client, c.dept, c.manager, c.shipped, c.collected, c.unshipped, c.current]
+      .map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(',')
+  ));
+  downloadBlob('\ufeff' + lines.join('\r\n'), '미확정출고_' + (currentPayload && currentPayload.baseDate ? currentPayload.baseDate : 'export') + '.csv', 'text/csv;charset=utf-8');
+}
 
 /* 로그인 직후 1회 자동 표시 — 같은 데이터 기준·세션에서는 다시 띄우지 않음 */
 function maybeShowCaution() {
@@ -1810,6 +1941,7 @@ document.addEventListener('DOMContentLoaded', () => {
   boot();
 });
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
