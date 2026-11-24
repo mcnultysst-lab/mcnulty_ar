@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -269,6 +270,54 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 .modal-f{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
 .searchbox{border:1px solid var(--line);background:#FAFAFA;padding:14px 16px;margin:14px 18px}
 
+/* ---------- client detail modal (거래처 세부내용 요약) ---------- */
+#clientDetailModal{z-index:150}
+#clientDetailModal .modal-box{max-width:840px}
+.cd-top{padding:18px 20px;border-bottom:1px solid var(--line);background:#FAFAFA}
+.cd-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cd-name-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cd-name{font-size:19px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.cd-badges{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cd-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;font-size:11.5px;font-weight:800;border:1px solid}
+.cd-badge.caution{background:var(--red-soft);color:var(--red-2);border-color:var(--red-line)}
+.cd-badge.caution .cd-ico{width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;font-style:normal}
+.cd-badge.unshipped{background:var(--blue-soft);color:var(--blue-2);border-color:var(--blue-line)}
+.cd-badge.uncollectible{background:#F2F2F2;color:var(--ink);border-color:var(--line-2)}
+.cd-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+.cd-meta span b{color:var(--ink);font-weight:700;margin-left:4px}
+.cd-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:16px 20px 4px}
+.cd-hcard{border:1px solid var(--line);background:#fff;padding:13px 15px}
+.cd-hcard.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.cd-hcard.dark .cd-hlb{color:#B5B5B5}
+.cd-hcard.dark .cd-hv{color:#fff}
+.cd-hcard.blue{background:var(--blue-soft);border-color:var(--blue-line)}
+.cd-hcard.blue .cd-hlb{color:var(--blue-2)}
+.cd-hcard.blue .cd-hv{color:var(--blue)}
+.cd-hlb{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.01em}
+.cd-hv{font-size:19px;font-weight:900;letter-spacing:-.02em;margin-top:5px;color:var(--ink)}
+.cd-hv .u{font-size:11.5px;font-weight:600;margin-left:3px;opacity:.75}
+.cd-sec{padding:14px 20px 6px}
+.cd-sec-t{font-size:12px;font-weight:800;color:var(--ink);letter-spacing:.02em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.cd-sec-t::before{content:"";width:7px;height:7px;background:var(--ink);display:inline-block}
+.cd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--ink);border-left:1px solid var(--line)}
+.cd-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+.cd-item.emph{background:#FAFAFA}
+.cd-item.blue{background:var(--blue-soft)}
+.cd-item-l{font-size:12px;color:var(--ink-2);font-weight:500;min-width:0}
+.cd-item.emph .cd-item-l{font-weight:700;color:var(--ink)}
+.cd-item.blue .cd-item-l{font-weight:700;color:var(--blue-2)}
+.cd-coltag{display:inline-block;font-size:10px;font-weight:700;color:var(--ink-4);background:#F2F2F2;padding:1px 5px;margin-right:5px;vertical-align:1px}
+.cd-item-v{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.cd-item.emph .cd-item-v{font-weight:900;font-size:14px}
+.cd-item.blue .cd-item-v{color:var(--blue);font-weight:900}
+.cd-aging{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);border-left:1px solid var(--line)}
+.cd-acell{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+.cd-acell.red{background:var(--red-soft)}
+.cd-alb{font-size:11px;font-weight:700;color:var(--ink-3);line-height:1.35}
+.cd-acell.red .cd-alb{color:var(--red-2)}
+.cd-av{font-size:14px;font-weight:800;color:var(--ink);margin-top:6px}
+.cd-acell.red .cd-av{color:var(--red);font-weight:900}
+
 /* ---------- empty / loading ---------- */
 .empty{padding:34px 18px;text-align:center;color:var(--ink-4);font-size:13px}
 .spin{width:15px;height:15px;border:2px solid var(--line-2);border-top-color:var(--ink);border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:8px}
@@ -317,6 +366,11 @@ table.tbl tbody tr.total td:first-child{background:#fff}
   .sec{margin-top:17px}
   .tip{bottom:auto;top:calc(100% - 4px)}
   .tip::after{bottom:auto;top:-6px;left:22px}
+  .cd-top{padding:14px}
+  .cd-hero{grid-template-columns:1fr;padding:12px 14px 4px}
+  .cd-sec{padding:12px 14px 6px}
+  .cd-grid{grid-template-columns:1fr}
+  .cd-aging{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media print{
   .top-r,.menu,.info,.modal,.gate{display:none !important}
@@ -562,7 +616,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
     <section class="sec">
       <div class="sec-h">
         <div class="sec-t" id="clientDetailTitle">거래처 상세 현황 · 담당자를 선택하세요</div>
-        <div class="legend"><span><i style="background:#D92D20"></i>장기미수 보유</span><span><i style="background:#0A0A0A"></i>현재 잔액</span></div>
+        <div class="legend"><span><i style="background:#D92D20"></i>장기미수 보유</span><span><i style="background:#0A0A0A"></i>현재 잔액</span><span>· 거래처 클릭 시 세부내역 요약</span></div>
       </div>
       <div class="card">
         <div class="tw scroll-y">
@@ -590,7 +644,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <div class="modal" id="longTermModal">
   <div class="modal-box">
     <div class="modal-h danger">
-      <h3><span class="dyn-lt">장기미수</span> 거래처 상세 명단 · 원 단위</h3>
+      <h3><span class="dyn-lt">장기미수</span> 거래처 상세 명단 · 원 단위 <span class="dim" style="font-weight:500;font-size:12px">(거래처 클릭 시 세부요약)</span></h3>
       <button class="x" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-b">
@@ -618,7 +672,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <div class="modal" id="uncollectibleModal">
   <div class="modal-box">
     <div class="modal-h">
-      <h3>회수 불능 채권 거래처 상세 명단 · 원 단위</h3>
+      <h3>회수 불능 채권 거래처 상세 명단 · 원 단위 <span class="dim" style="font-weight:500;font-size:12px">(거래처 클릭 시 세부요약)</span></h3>
       <button class="x" onclick="closeUncollectibleModal()">&times;</button>
     </div>
     <div class="modal-b">
@@ -677,7 +731,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <div class="modal" id="searchModal">
   <div class="modal-box">
     <div class="modal-h">
-      <h3>거래처 검색 결과</h3>
+      <h3>거래처 검색 결과 <span class="dim" style="font-weight:500;font-size:12px">(거래처 클릭 시 세부요약)</span></h3>
       <button class="x" onclick="closeSearchModal()">&times;</button>
     </div>
     <div class="modal-b" id="searchResultContent"></div>
@@ -688,7 +742,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <div class="modal" id="unshippedModal">
   <div class="modal-box">
     <div class="modal-h info">
-      <h3>60일 이상 미확정 출고 거래처 명단 · 원 단위</h3>
+      <h3>60일 이상 미확정 출고 거래처 명단 · 원 단위 <span class="dim" style="font-weight:500;font-size:12px">(거래처 클릭 시 세부요약)</span></h3>
       <button class="x" onclick="closeUnshippedModal()">&times;</button>
     </div>
     <div class="modal-b">
@@ -724,7 +778,7 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <div class="modal" id="cautionModal">
   <div class="modal-box">
     <div class="modal-h danger">
-      <h3>주의 거래처 · 상태 확인 필요</h3>
+      <h3>주의 거래처 · 상태 확인 필요 <span class="dim" style="font-weight:500;font-size:12px">(거래처 클릭 시 세부요약)</span></h3>
       <button class="x" onclick="closeCautionModal()">&times;</button>
     </div>
     <div class="modal-b">
@@ -754,6 +808,20 @@ table.tbl tbody tr.total td:first-child{background:#fff}
     <div class="modal-f">
       <button class="btn ghost" onclick="cautionCsv()">주의 명단 CSV</button>
       <button class="btn ghost" onclick="closeCautionModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 거래처 세부내용 요약 모달 ==================== -->
+<div class="modal" id="clientDetailModal">
+  <div class="modal-box">
+    <div class="modal-h">
+      <h3>거래처 세부내용 요약 · 원 단위</h3>
+      <button class="x" onclick="closeClientDetailModal()">&times;</button>
+    </div>
+    <div class="modal-b" id="clientDetailModalBody"></div>
+    <div class="modal-f">
+      <button class="btn ghost" onclick="closeClientDetailModal()">닫기</button>
     </div>
   </div>
 </div>
@@ -804,8 +872,6 @@ table.tbl tbody tr.total td:first-child{background:#fff}
 <script>
 /* =====================================================================
    채권 관리 대시보드 · 애플리케이션 스크립트
-   - 데이터 가공/집계 로직(processData, 부서·담당자 그룹핑, 정렬)은 기존과 동일
-   - 달라진 점: ① 비밀번호 잠금 + 암호화된 data.enc 로딩 ② 화면(디자인) ③ Mock 제거
    ===================================================================== */
 const KEY_PW = 'mc_ar_pw';
 const DATA_URL = 'data.enc';
@@ -814,10 +880,10 @@ const $ = (id) => document.getElementById(id);
 const formatKRW = (n) => new Intl.NumberFormat('ko-KR').format(Math.round(n || 0));
 const formatMil = (n) => new Intl.NumberFormat('ko-KR').format(Math.round((n || 0) / 1000000));
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-/* 거래처명 셀 — S열 "주의" 표기가 있으면 적색 칩을 붙여 표시 */
+/* 거래처명 셀 — S열 "주의" / M열 "미확정" 칩 표시 */
 const clientCell = (c) => esc(c.client)
   + (c.caution ? ' <span class="chip red">주의</span>' : '')
-  + (c.unshipped ? ' <span class="chip blue">미확정</span>' : '');
+  + (c.unshipped > 0 ? ' <span class="chip blue">미확정</span>' : '');
 
 const parseNum = (val) => {
   if (typeof val === 'number') return isFinite(val) ? val : 0;
@@ -830,6 +896,7 @@ const parseNum = (val) => {
 
 /* ---------------- state ---------------- */
 let rawData = [];
+let recordsById = {};
 let deptData = {};
 let managerData = {};
 let longTermClients = [];
@@ -856,14 +923,6 @@ let currentPayload = null;     // 마지막으로 로드된 데이터(재암호�
 let currentPassword = null;    // 잠금 해제에 사용한 비밀번호(세션 내에서만 사용)
 
 /* ---------------- crypto ---------------- */
-/* ==========================================================================
-   ■■  비밀번호 설정  ■■   여기 두 줄이 이 대시보드의 모든 열쇠입니다.
-   ■  AUTH  = 대시보드 접속 비밀번호        (관리자만 교체 가능)
-   ■  ADMIN = '비밀번호 변경' 을 허용하는 관리자 비밀번호  (관리자 본인만 알고 있음)
-   ■  평문 비밀번호는 이 파일에 저장되지 않습니다. (PBKDF2 단방향 해시만 기록)
-   ■  교체 방법: 대시보드 로그인 → 관리 → 비밀번호 변경 (관리자 인증 필요)
-   ■  M열 = 60일 이상 출고 후 미확정(매출 미확정) 금액 → 대시보드 '미확정 출고' 지표
-   ========================================================================== */
 const AUTH  = { salt: "1qxi4YQ0eazy3umZgNjzfQ==", iter: 210000, hash: "NOCpyudFjduSF0lp0dUj+et/vSOf6ldKDQXSP0FdRTU=" };
 const ADMIN = { salt: "OoZtMPXmE/FW1mNazRNRTw==", iter: 210000, hash: "t3bt/ouryTXDS/RRkt+erVhJoCgeNNtWnrfciU6RIRY=" };
 
@@ -931,7 +990,6 @@ function setGateMsg(msg, kind) {
   el.textContent = msg || '';
   el.className = 'gate-msg' + (kind ? ' ' + kind : '');
 }
-/* 한글 입력 상태 감지 — 한국어 IME 가 켜진 채로 입력하면 mc8282 가 'ㅡㅊ8282' 로 들어갑니다 */
 const HAS_HANGUL = /[\u3131-\u318E\uAC00-\uD7A3]/;
 function koreanModeWarning(v) {
   return HAS_HANGUL.test(v)
@@ -981,7 +1039,6 @@ async function doUnlock(ev) {
   }
 }
 
-/* 시도 횟수 제한 — 무차별 대입 방지 (브라우저 기준 5회 실패 시 30초 대기) */
 let failCount = 0;
 function guardAttempt() {
   if (failCount >= 5) {
@@ -1031,18 +1088,19 @@ function applyMeta(p) {
   const h = p.headers || {};
   const M = monthFrom(p.baseDate);
   const pm = (n) => { let v = M - n; while (v < 1) v += 12; return v; };
-  const pick = (raw, gen) => {
+  const pick = (raw, gen, suffix) => {
     if (raw === null || raw === undefined || raw === '') return gen;
     const s = String(raw).trim();
-    if (/^\d{1,2}$/.test(s)) return gen;   // 엑셀 헤더셀이 월 숫자만 있는 경우 → 월 기반 라벨 자동 생성
+    if (/^\d{1,2}$/.test(s)) return gen;
+    if (suffix && /^\d{1,2}월$/.test(s)) return s + ' ' + suffix;
     return s;
   };
   dynamicHeaders.shippedI = pick(h.shippedI, M + '월 이전 매출 미처리 누적금액');
   dynamicHeaders.shippedJ = pick(h.shippedJ, M + '월 당월 출고 매출금액');
-  dynamicHeaders.m0 = pick(h.m0, M + '월 발생분');
-  dynamicHeaders.m1 = pick(h.m1, pm(1) + '월 발생분');
-  dynamicHeaders.m2 = pick(h.m2, pm(2) + '월 발생분');
-  dynamicHeaders.lt = pick(h.lt, pm(3) + '월 이전 장기미수');
+  dynamicHeaders.m0 = pick(h.m0, M + '월 발생분', '발생분');
+  dynamicHeaders.m1 = pick(h.m1, pm(1) + '월 발생분', '발생분');
+  dynamicHeaders.m2 = pick(h.m2, pm(2) + '월 발생분', '발생분');
+  dynamicHeaders.lt = pick(h.lt, pm(3) + '월 이전 장기미수', '이전 장기미수');
 
   if (p.baseDate) {
     $('dataBaseDateDisplay').textContent = '데이터 기준일 ' + p.baseDate;
@@ -1068,7 +1126,13 @@ function updateDynamicHeaders() {
 function payloadToRows(p) {
   const rows = [{ B: '거래처명', C: '부서', D: '담당자' }];
   (p.rows || []).forEach((r) => {
-    rows.push({ B: r[0], C: r[1], D: r[2], H: r[3], I: r[4], J: r[5], K: r[6], L: r[7], M: r[8] || 0, N: r[9], O: r[10], P: r[11], Q: r[12], S: r[13] || '' });
+    rows.push({
+      B: r[0], C: r[1], D: r[2],
+      F: r[14] || 0, G: r[15] || 0,
+      H: r[3], I: r[4], J: r[5], K: r[6], L: r[7],
+      M: r[8] || 0, N: r[9], O: r[10], P: r[11], Q: r[12],
+      S: r[13] || ''
+    });
   });
   return rows;
 }
@@ -1103,23 +1167,50 @@ function payloadFromWorkbook(wb) {
   const jsonRows = XLSX.utils.sheet_to_json(ws, { header: 'A', defval: '' });
   const rows = [];
   let started = false;
+  let detectedHeaders = null;
+
   for (let i = 0; i < jsonRows.length; i++) {
     const r = jsonRows[i];
     const b = String(r.B || '').trim();
-    if (!started) { if (b.includes('거래처')) { started = true; continue; } if (i > 7) started = true; else continue; }
+    if (!started) {
+      if (b.includes('거래처')) {
+        started = true;
+        detectedHeaders = {
+          shippedI: String(r.I || '').trim(),
+          shippedJ: String(r.J || '').trim(),
+          m0: String(r.N || '').trim(),
+          m1: String(r.O || '').trim(),
+          m2: String(r.P || '').trim(),
+          lt: String(r.Q || '').trim()
+        };
+        continue;
+      }
+      if (i > 7) started = true; else continue;
+    }
     if (!b) continue;
     const joined = Object.values(r).join('');
     if (joined.includes('총합계') || joined.includes('소계') || joined.includes('총계')) continue;
-    rows.push([b, String(r.C || '').trim(), String(r.D || '').trim(),
+    rows.push([
+      b, String(r.C || '').trim(), String(r.D || '').trim(),
       parseNum(r.H), parseNum(r.I), parseNum(r.J), parseNum(r.K), parseNum(r.L),
       parseNum(r.M), parseNum(r.N), parseNum(r.O), parseNum(r.P), parseNum(r.Q),
-      String(r.S || '').trim()]);
+      String(r.S || '').trim(),
+      parseNum(r.F), parseNum(r.G)
+    ]);
   }
+  const dh = detectedHeaders || {};
   return {
     v: 1,
     baseDate: cellDate(ws, 'B3'),
     updated: cellDate(ws, 'B4'),
-    headers: { shippedI: cellText(ws, 'I5'), shippedJ: cellText(ws, 'J5'), m0: cellText(ws, 'N5'), m1: cellText(ws, 'O5'), m2: cellText(ws, 'P5'), lt: cellText(ws, 'Q5') },
+    headers: {
+      shippedI: dh.shippedI || cellText(ws, 'I5'),
+      shippedJ: dh.shippedJ || cellText(ws, 'J5'),
+      m0: dh.m0 || cellText(ws, 'N5'),
+      m1: dh.m1 || cellText(ws, 'O5'),
+      m2: dh.m2 || cellText(ws, 'P5'),
+      lt: dh.lt || cellText(ws, 'Q5')
+    },
     rows: rows
   };
 }
@@ -1149,20 +1240,21 @@ function handleExcelUpload(event) {
   reader.readAsArrayBuffer(file);
 }
 
-/* ---------------- core aggregation (기존 로직 유지) ---------------- */
+/* ---------------- core aggregation ---------------- */
 function resetClientPane() {
   $('clientDetailTitle').textContent = '거래처 상세 현황 · 담당자를 선택하세요';
   $('clientTableBody').innerHTML = '<tr><td colspan="9" class="empty">담당자를 선택하시면 상세 거래처 내역이 표시됩니다.</td></tr>';
 }
 
 function processData(jsonRows) {
-  rawData = []; deptData = {}; managerData = {}; longTermClients = []; uncollectibleClients = []; cautionClients = []; unshippedClients = [];
+  rawData = []; recordsById = {}; deptData = {}; managerData = {}; longTermClients = []; uncollectibleClients = []; cautionClients = []; unshippedClients = [];
   activeManagerName = null;
   resetClientPane();
 
   let dataStarted = false;
   let lastDept = '미지정부서';
   let lastManager = '미지정담당자';
+  let recordSeq = 1;
 
   for (let i = 0; i < jsonRows.length; i++) {
     let row = jsonRows[i];
@@ -1185,6 +1277,8 @@ function processData(jsonRows) {
     if (d) lastManager = d; else d = lastManager;
     if (!b) b = '미지정거래처';
 
+    let prevDebit = parseNum(row.F);
+    let prevCredit = parseNum(row.G);
     let prev = parseNum(row.H);
     let shipped_i = parseNum(row.I);
     let shipped_j = parseNum(row.J);
@@ -1199,19 +1293,29 @@ function processData(jsonRows) {
     let unshipped = parseNum(row.M);   // M열: 60일 이상 출고 후 매출 미확정 금액
     let caution = /주의/.test(String(row.S == null ? '' : row.S));
 
-    if (prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0 && unshipped === 0) continue;
+    if (prevDebit === 0 && prevCredit === 0 && prev === 0 && shipped === 0 && collected === 0 && current === 0 && longterm === 0 && unshipped === 0) continue;
 
-    const record = { dept: c, manager: d, client: b, prev, shipped, shipped_i, shipped_j, collected, current, month0, month1, month2, longterm, unshipped, caution };
-    if (record.caution && c !== '회수 불능 채권' && c.replace(/\s+/g, '') !== '회수불능채권') cautionClients.push(record);
+    const isUncollectible = (c === '회수 불능 채권' || c.replace(/\s+/g, '') === '회수불능채권');
+    const record = {
+      _id: recordSeq++,
+      dept: c, manager: d, client: b,
+      prevDebit, prevCredit, prev,
+      shipped, shipped_i, shipped_j, collected, current,
+      month0, month1, month2, longterm, unshipped, caution,
+      isUncollectible
+    };
+    recordsById[record._id] = record;
 
-    if (c === '회수 불능 채권' || c.replace(/\s+/g, '') === '회수불능채권') {
+    if (record.caution && !isUncollectible) cautionClients.push(record);
+
+    if (isUncollectible) {
       uncollectibleClients.push(record);
       continue;
     }
 
     rawData.push(record);
     if (longterm > 0) longTermClients.push(record);
-    if (unshipped > 0 && c !== '회수 불능 채권' && c.replace(/\s+/g, '') !== '회수불능채권') unshippedClients.push(record);   // 미확정 출고 대상 (M열 > 0, 회수불능 제외)
+    if (unshipped > 0) unshippedClients.push(record);
 
     if (!deptData[c]) deptData[c] = { prev: 0, shipped: 0, shipped_i: 0, shipped_j: 0, collected: 0, current: 0, month0: 0, month1: 0, month2: 0, longterm: 0, unshipped: 0 };
     deptData[c].prev += prev;
@@ -1263,7 +1367,6 @@ function updateDashboardUI() {
     totalCollected += d.collected; totalCurrent += d.current; totalLongTerm += d.longterm;
   });
   const totalUncollectible = uncollectibleClients.reduce((s, c) => s + c.current, 0);
-  /* 강조 대상 = M열 > 0 (확인·기안 조정이 필요한 건). 음수(매출확정이 출고를 초과)는 제외 */
   const totalUnshipped = unshippedClients.reduce((s, c) => s + c.unshipped, 0);
 
   $('valPrev').textContent = formatMil(totalPrev);
@@ -1381,6 +1484,133 @@ function renderWaterfall(tPrev, tI, tJ, tCol, tCur) {
   $('wfNote').textContent = '막대 높이는 전체 금액 대비 비율입니다. 단위: 백만원';
 }
 
+/* ---------------- 거래처 세부내용 요약 모달 ---------------- */
+function openClientDetailModal(recordId) {
+  const c = recordsById[recordId];
+  if (!c) return;
+
+  const statusBadges = [];
+  if (c.caution) {
+    statusBadges.push(
+      '<span class="cd-badge caution">' +
+        '<i class="cd-ico">!</i>' +
+        '<span>주의 거래처</span>' +
+      '</span>'
+    );
+  }
+  if (c.unshipped > 0) {
+    statusBadges.push(
+      '<span class="cd-badge unshipped">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.8"/></svg>' +
+        '<span>미확정 출고</span>' +
+      '</span>'
+    );
+  }
+  if (c.isUncollectible) {
+    statusBadges.push(
+      '<span class="cd-badge uncollectible">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"><circle cx="12" cy="12" r="9"/><path d="M6 18 18 6"/></svg>' +
+        '<span>회수 불능 채권</span>' +
+      '</span>'
+    );
+  }
+
+  const body = $('clientDetailModalBody');
+  body.innerHTML =
+    '<div class="cd-top">' +
+      '<div class="cd-title-row">' +
+        '<div class="cd-name-wrap">' +
+          '<div class="cd-name">' + esc(c.client) + '</div>' +
+          (statusBadges.length ? '<div class="cd-badges">' + statusBadges.join('') + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="cd-meta">' +
+        '<span>부서<b>' + esc(c.dept) + '</b></span>' +
+        '<span>담당자<b>' + esc(c.manager) + '</b></span>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="cd-hero">' +
+      '<div class="cd-hcard dark">' +
+        '<div class="cd-hlb">현 기준 잔액</div>' +
+        '<div class="cd-hv num">' + formatKRW(c.current) + '<span class="u">원</span></div>' +
+      '</div>' +
+      '<div class="cd-hcard">' +
+        '<div class="cd-hlb">전월 마감 미수</div>' +
+        '<div class="cd-hv num">' + formatKRW(c.prev) + '<span class="u">원</span></div>' +
+      '</div>' +
+      '<div class="cd-hcard' + (c.unshipped > 0 ? ' blue' : '') + '">' +
+        '<div class="cd-hlb">60일 이상 매출 미확정 출고금액</div>' +
+        '<div class="cd-hv num">' + formatKRW(c.unshipped) + '<span class="u">원</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="cd-sec">' +
+      '<div class="cd-sec-t">전월 마감 및 당월 정산 내역</div>' +
+      '<div class="cd-grid">' +
+        '<div class="cd-item">' +
+          '<span class="cd-item-l">전월 마감 차변</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.prevDebit) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item">' +
+          '<span class="cd-item-l">전월 마감 대변</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.prevCredit) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item emph">' +
+          '<span class="cd-item-l">전월 마감 미수</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.prev) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item">' +
+          '<span class="cd-item-l">' + esc(dynamicHeaders.shippedI) + '</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.shipped_i) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item">' +
+          '<span class="cd-item-l">' + esc(dynamicHeaders.shippedJ) + '</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.shipped_j) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item">' +
+          '<span class="cd-item-l">당월 수금액</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.collected) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item emph">' +
+          '<span class="cd-item-l">현 기준 잔액</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.current) + '원</span>' +
+        '</div>' +
+        '<div class="cd-item' + (c.unshipped > 0 ? ' blue' : '') + '">' +
+          '<span class="cd-item-l">60일 이상 매출 미확정 출고금액</span>' +
+          '<span class="cd-item-v num">' + formatKRW(c.unshipped) + '원</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="cd-sec" style="padding-bottom:16px">' +
+      '<div class="cd-sec-t">월별 미수 발생 현황</div>' +
+      '<div class="cd-aging">' +
+        '<div class="cd-acell">' +
+          '<div class="cd-alb">' + esc(dynamicHeaders.m0) + '</div>' +
+          '<div class="cd-av num">' + formatKRW(c.month0) + '원</div>' +
+        '</div>' +
+        '<div class="cd-acell">' +
+          '<div class="cd-alb">' + esc(dynamicHeaders.m1) + '</div>' +
+          '<div class="cd-av num">' + formatKRW(c.month1) + '원</div>' +
+        '</div>' +
+        '<div class="cd-acell">' +
+          '<div class="cd-alb">' + esc(dynamicHeaders.m2) + '</div>' +
+          '<div class="cd-av num">' + formatKRW(c.month2) + '원</div>' +
+        '</div>' +
+        '<div class="cd-acell' + (c.longterm > 0 ? ' red' : '') + '">' +
+          '<div class="cd-alb">' + esc(dynamicHeaders.lt) + '</div>' +
+          '<div class="cd-av num">' + formatKRW(c.longterm) + '원</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  $('clientDetailModal').classList.add('on');
+}
+function closeClientDetailModal() {
+  $('clientDetailModal').classList.remove('on');
+}
+
 /* ---------------- modal helpers ---------------- */
 function openModal() { renderLongTermTable(); $('longTermModal').classList.add('on'); }
 function closeModal() { $('longTermModal').classList.remove('on'); }
@@ -1420,7 +1650,7 @@ function renderUnshippedTable() {
     return unshippedSortAsc ? va - vb : vb - va;
   });
   tb.innerHTML = sorted.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="dim">' + esc(c.dept) + '</td>' +
     '<td class="b">' + esc(c.manager) + '</td>' +
     '<td class="b">' + clientCell(c) + '</td>' +
@@ -1482,7 +1712,7 @@ function renderCautionTable() {
     return cautionSortAsc ? va - vb : vb - va;
   });
   tb.innerHTML = sorted.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="dim">' + esc(c.dept) + '</td>' +
     '<td class="b">' + esc(c.manager) + '</td>' +
     '<td class="b">' + clientCell(c) + '</td>' +
@@ -1514,13 +1744,21 @@ function closeDeptModal() { $('deptModal').classList.remove('on'); }
 /* 모든 모달: 배경 클릭 / ESC 닫기 */
 document.addEventListener('click', (e) => {
   if (e.target.classList && e.target.classList.contains('modal')) {
-    document.querySelectorAll('.modal.on').forEach((m) => m.classList.remove('on'));
+    if (e.target.id === 'clientDetailModal') {
+      closeClientDetailModal();
+    } else {
+      document.querySelectorAll('.modal.on').forEach((m) => m.classList.remove('on'));
+    }
   }
   const tip = e.target.closest ? e.target.closest('.info') : null;
   document.querySelectorAll('.tip.on').forEach((t) => { if (!tip || t !== tip.parentElement.querySelector('.tip')) t.classList.remove('on'); });
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    if ($('clientDetailModal') && $('clientDetailModal').classList.contains('on')) {
+      closeClientDetailModal();
+      return;
+    }
     document.querySelectorAll('.modal.on').forEach((m) => m.classList.remove('on'));
     document.querySelectorAll('.tip.on').forEach((t) => t.classList.remove('on'));
     $('menuList').classList.remove('on');
@@ -1565,7 +1803,7 @@ function renderLongTermTable() {
     return longTermSortAsc ? va - vb : vb - va;
   });
   tb.innerHTML = sorted.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="dim">' + esc(c.dept) + '</td>' +
     '<td class="b">' + esc(c.manager) + '</td>' +
     '<td class="b">' + clientCell(c) + '</td>' +
@@ -1596,7 +1834,7 @@ function renderUncollectibleTable() {
     return uncollectibleSortAsc ? va - vb : vb - va;
   });
   tb.innerHTML = sorted.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="dim">' + esc(c.dept) + '</td>' +
     '<td class="b">' + esc(c.manager) + '</td>' +
     '<td class="b">' + clientCell(c) + '</td>' +
@@ -1615,7 +1853,7 @@ function renderUncollectibleTable() {
 /* ---------------- dept detail ---------------- */
 function openDeptModal(deptName) {
   activeDeptName = deptName;
-  $('deptModalTitle').textContent = '[' + deptName + '] 상세 거래처 명단 · 원 단위';
+  $('deptModalTitle').textContent = '[' + deptName + '] 상세 거래처 명단 · 원 단위 (거래처 클릭 시 세부요약)';
   renderDeptDetails();
   $('deptModal').classList.add('on');
 }
@@ -1627,7 +1865,7 @@ function renderDeptDetails() {
     return deptSortAsc ? va - vb : vb - va;
   });
   tb.innerHTML = filtered.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="dim">' + esc(c.dept) + '</td>' +
     '<td class="b">' + esc(c.manager) + '</td>' +
     '<td class="b">' + clientCell(c) + '</td>' +
@@ -1701,7 +1939,7 @@ function renderClientDetails(managerName, rowElement) {
     return clientSortAsc ? va - vb : vb - va;
   });
   $('clientTableBody').innerHTML = sorted.map((c) =>
-    '<tr>' +
+    '<tr class="clickable" onclick="openClientDetailModal(' + c._id + ')" title="클릭하여 거래처 세부내용 보기">' +
     '<td class="b">' + clientCell(c) + '</td>' +
     '<td class="r num dim">' + formatKRW(c.prev) + '</td>' +
     '<td class="r num dim">' + formatKRW(c.shipped) + '</td>' +
@@ -1726,18 +1964,20 @@ function handleSearch(ev) { if (ev.key === 'Enter') searchClient(); }
 function searchClient() {
   const q = $('clientSearchInput').value.trim().toLowerCase();
   if (!q) { toast('검색할 거래처명을 입력해 주세요.'); return; }
-  const results = rawData.filter((r) => r.client.toLowerCase().includes(q));
+  const allPool = rawData.concat(uncollectibleClients);
+  const results = allPool.filter((r) => r.client.toLowerCase().includes(q));
   const box = $('searchResultContent');
   if (!results.length) {
     box.innerHTML = '<div class="empty">"' + esc(q) + '" 에 대한 검색 결과가 없습니다.</div>';
   } else {
-    box.innerHTML = '<div class="pad sec-sub">검색 결과 ' + results.length + '건</div>' +
+    box.innerHTML = '<div class="pad sec-sub">검색 결과 ' + results.length + '건 · 행을 클릭하면 세부내역을 확인할 수 있습니다</div>' +
       '<div class="tw"><table class="tbl wide"><thead><tr>' +
       '<th>거래처명</th><th>부서</th><th>담당자</th>' +
       '<th class="r">전월미수</th><th class="r">출고처리</th><th class="r">당월수금</th><th class="r">현잔액</th><th class="r"><span class="dyn-lt">장기미수</span></th>' +
       '</tr></thead><tbody>' +
       results.map((r) =>
-        '<tr><td class="b">' + clientCell(r) + '</td>' +
+        '<tr class="clickable" onclick="openClientDetailModal(' + r._id + ')" title="클릭하여 거래처 세부내용 보기">' +
+        '<td class="b">' + clientCell(r) + '</td>' +
         '<td class="dim">' + esc(r.dept) + '</td>' +
         '<td class="muted">' + esc(r.manager) + '</td>' +
         '<td class="r num dim">' + formatKRW(r.prev) + '</td>' +
@@ -1854,7 +2094,6 @@ async function changePassword() {
   if (!currentPayload) { toast('데이터가 없습니다. 먼저 엑셀을 업로드해 주세요.'); return; }
   if (!window.crypto || !crypto.subtle) { toast('이 페이지는 https 환경에서만 열 수 있습니다.'); return; }
 
-  /* ① 관리자 인증 — 관리자 비밀번호를 모르면 여기서 막힙니다 */
   const adminPw = await askPassword({
     title: '관리자 인증',
     desc: '비밀번호를 변경하려면 <b>관리자 비밀번호</b>가 필요합니다.<br>관리자만 이 작업을 진행할 수 있습니다.',
@@ -1872,7 +2111,6 @@ async function changePassword() {
   });
   if (adminPw === null) return;
 
-  /* ② 새 접속 비밀번호 */
   const pw1 = await askPassword({
     title: '새 비밀번호 설정',
     desc: '대시보드 접속에 사용할 <b>새 비밀번호</b>를 입력하세요.<br>(4자 이상 · 영문/숫자 조합 권장, 12자 이상이면 더 안전합니다)',
@@ -1881,7 +2119,6 @@ async function changePassword() {
   });
   if (pw1 === null) return;
 
-  /* ③ 확인 */
   const pw2 = await askPassword({
     title: '새 비밀번호 확인',
     desc: '같은 비밀번호를 한 번 더 입력해 주세요.',
@@ -1890,7 +2127,6 @@ async function changePassword() {
   });
   if (pw2 === null) return;
 
-  /* ④ 적용 — 새 data.enc 생성 + index.html 에 넣을 설정값 생성 */
   const btn = $('askOk');
   try {
     const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -1912,9 +2148,9 @@ async function changePassword() {
 function downloadCurrentJson() {
   $('menuList').classList.remove('on');
   if (!rawData.length) { toast('내보낼 데이터가 없습니다.'); return; }
-  const head = ['거래처명', '부서', '담당자', '전월미수', '출고처리', '당월수금', '현잔액', '당월발생', '1개월전', '2개월전', '장기미수'];
+  const head = ['거래처명', '부서', '담당자', '전월마감차변', '전월마감대변', '전월미수', dynamicHeaders.shippedI, dynamicHeaders.shippedJ, '당월수금', '현잔액', '60일이상미확정출고', dynamicHeaders.m0, dynamicHeaders.m1, dynamicHeaders.m2, dynamicHeaders.lt];
   const lines = [head.join(',')].concat(rawData.map((r) =>
-    [r.client, r.dept, r.manager, r.prev, r.shipped, r.collected, r.current, r.month0, r.month1, r.month2, r.longterm]
+    [r.client, r.dept, r.manager, r.prevDebit, r.prevCredit, r.prev, r.shipped_i, r.shipped_j, r.collected, r.current, r.unshipped, r.month0, r.month1, r.month2, r.longterm]
       .map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(',')
   ));
   downloadBlob('\ufeff' + lines.join('\r\n'), '채권현황_' + (currentPayload && currentPayload.baseDate ? currentPayload.baseDate : 'export') + '.csv', 'text/csv;charset=utf-8');
@@ -1941,7 +2177,6 @@ document.addEventListener('DOMContentLoaded', () => {
   boot();
 });
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
